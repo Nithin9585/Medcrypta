@@ -20,9 +20,6 @@ jobs:
           cd frontend
           npm install
       - name: Run Next.js build
-        run: |
-          cd frontend
-          npm run build
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v20
         with:
