@@ -5,7 +5,7 @@
 ### Frontend (Next.js)
 1. Clone the repository.
    ```bash
-   git clone <repository_url>
+   git clone [<repository_url>](https://github.com/Nithin9585/Block-chain-application.git)
 2. Go to the frontend directory:
    ```bash
    cd frontend
