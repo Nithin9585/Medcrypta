@@ -4,6 +4,8 @@
 
 ### Frontend (Next.js)
 1. Clone the repository.
+   ```bash
+   git clone <repository_url>
 2. Go to the frontend directory:
    ```bash
    cd frontend
@@ -19,10 +21,11 @@
 
    ```bash
    cd backend
+
 2.  Install dependencies:
 
-   ```bash
-   pip install -r requirements.
+    ```bash
+    pip install -r requirements.
 3. Run migrations:
 
     ```bash
@@ -32,7 +35,6 @@
     ```bash
     python manage.py runserver
 
-
 ### Contributing
 
 1. Fork the repository.
@@ -40,20 +42,21 @@
 
 2. Create a new branch for  your feature or fix.
 
+   ####   Before making any changes, create a new branch for your feature or fix:
+   ```bash
+    git checkout -b <branch_name>
+3. Make your changes.
 
-3. Make your changes and submit a pull request.
+4. Stage and commit your changes: After making changes, stage the modified files and commit your changes with a meaningful message:
+   ```bash
+   git add .
+   git commit -m "Description of your changes"
 
-
-4. Our CI will automatically test and deploy your changes.
-
-
-
-
-
-
-
-   
-
-
-
-
+5. Push your changes
+   #### Push your changes
+   ```bash
+   git push origin <branch_name>
+6. Submit a pull request (PR)
+7. Delete your branch after merging:
+   ```bash
+   git branch -d <branch_name>      
