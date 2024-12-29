@@ -12,7 +12,7 @@ import {
 import { ModeToggle } from './theme-btn';
 export default function Navbar() {
   return (
-    <nav className="bg-[#4ECCA3]/50 sticky top-0 backdrop-blur border-b p-4 z-50">
+    <nav className="bg-background/50 sticky top-0 backdrop-blur border-b p-4 z-50">
       <div className="container mx-auto flex justify-between items-center">
         <div className=" text-2xl font-bold">
           <Link href="/">
