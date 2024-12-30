@@ -16,7 +16,7 @@ export default function Navbar() {
       <div className="container mx-auto flex justify-between items-center">
         <div className=" text-2xl font-bold">
         <Link href="/" className="relative inline-block text-gray-500 hover:text-gray-600 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-[20px] after:h-[2px] after:bg-gradient-to-r after:from-[#38ef7d] after:to-[#4ade80] after:transition-all after:duration-500 hover:after:w-full hover:after:scale-x-100 hover:after:translate-y-1">
-              Medcrypta<span className="text-green-500 pl-2 ">+</span></Link>
+              MedCrypta<span className="text-green-500 pl-2 ">+</span></Link>
         </div>
       <div className="hidden md:flex space-x-4 items-center">
       <Link href="/" className="relative inline-block hover:text-gray-600 dark:hover:text-white ">
