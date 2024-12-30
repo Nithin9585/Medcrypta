@@ -15,19 +15,30 @@ export default function Navbar() {
     <nav className="bg-background/50 sticky top-0 backdrop-blur border-b p-4 z-50">
       <div className="container mx-auto flex justify-between items-center">
         <div className=" text-2xl font-bold">
-          <Link href="/" >
-          Medcrypta
-          </Link>
+        <Link href="/" className="relative inline-block text-gray-500 hover:text-gray-600 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-[20px] after:h-[2px] after:bg-gradient-to-r after:from-[#38ef7d] after:to-[#4ade80] after:transition-all after:duration-500 hover:after:w-full hover:after:scale-x-100 hover:after:translate-y-1">
+              Medcrypta<span className="text-green-500 pl-2 ">+</span></Link>
         </div>
       <div className="hidden md:flex space-x-4 items-center">
-  <Link href="/" className="transition duration-300 ease-in-out relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-[#15803d] after:to-[#4ade80] after:scale-x-0 after:origin-left after:transition-transform after:duration-500 hover:after:scale-x-100 hover:-translate-y-1">page 1</Link>
-  <Link href="/blog" className="transition duration-300 ease-in-out relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-[#15803d] after:to-[#4ade80] after:scale-x-0 after:origin-left after:transition-transform after:duration-500 hover:after:scale-x-100 hover:-translate-y-1">page 2</Link>
-  <Link href="/about" className="transition duration-300 ease-in-out relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-[#15803d] after:to-[#4ade80] after:scale-x-0 after:origin-left after:transition-transform after:duration-500 hover:after:scale-x-100 hover:-translate-y-1">About project</Link>
-  <Link href="/Contact" className="transition duration-300 ease-in-out relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-[#15803d] after:to-[#4ade80] after:scale-x-0 after:origin-left after:transition-transform after:duration-500 hover:after:scale-x-100 hover:-translate-y-1">Contact</Link>
+      <Link href="/" className="relative inline-block hover:text-gray-600 dark:hover:text-white ">
+  Page 1
+</Link>
+
+<Link href="/blog" className="relative inline-block hover:text-gray-600  dark:hover:text-white">
+  Page 2
+</Link>
+
+<Link href="/about" className="relative inline-block hover:text-gray-600  dark:hover:text-white">
+  About Project
+</Link>
+
+<Link href="/Contact" className="relative inline-block hover:text-gray-600 dark:hover:text-white">
+  Contact
+</Link>
+
 
 <div>
-    <Button className="mx-1 hover:bg-gray-200 hover:text-[#4ade80]  dark:hover:text-white transition duration-300 ease-in-out" variant="outline">Login</Button>
-    <Button className="mx-1 hover:bg-gray-200 hover:text-[#4ade80]  dark:hover:text-white transition duration-300 ease-in-out" variant="outline">Sign up</Button>
+    <Button className="mx-1   dark:hover:text-white transition duration-300 ease-in-out" variant="outline">Login</Button>
+    <Button className="mx-1    dark:hover:text-white transition duration-300 ease-in-out" variant="outline">Sign up</Button>
   </div>
   <ModeToggle />
 </div>
@@ -43,7 +54,9 @@ export default function Navbar() {
             
             <SheetContent>
               <SheetHeader>
-                <SheetTitle>Logo</SheetTitle>
+                <SheetTitle> <Link href="/" className="relative inline-block text-gray-500 hover:text-gray-600 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-[20px] after:h-[2px] after:bg-gradient-to-r after:from-[#38ef7d] after:to-[#4ade80] after:transition-all after:duration-500 hover:after:w-full hover:after:scale-x-100 hover:after:translate-y-1">
+                Medcrypta<span className="text-green-500 pl-2 ">+</span></Link>
+                </SheetTitle>
                 <SheetDescription>
                   <div className="flex pt-10 flex-col gap-8 items-center">
                     <Link href="/" className=" hover:text-gray-200">About us</Link>
