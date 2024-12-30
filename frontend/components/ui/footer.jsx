@@ -1,9 +1,9 @@
 export default function Footer() {
     return (
-        <footer className="border-t border-purple-600 py-4 mt-4">
+        <footer className="border-t border-[#166534] py-4 mt-4">
             <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
                 <div className="mb-4 md:mb-0">
-                    <h2 className="text-lg ml-2 font-bold">Logo</h2>
+                    <h2 className="text-lg ml-2 font-bold">Medcrypta</h2>
                 </div>
                 <div className="flex space-x-4 mb-4 md:mb-0">
                     <a href="/" className="hover:underline">Home</a>

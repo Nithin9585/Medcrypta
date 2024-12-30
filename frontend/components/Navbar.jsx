@@ -15,19 +15,19 @@ export default function Navbar() {
     <nav className="bg-background/50 sticky top-0 backdrop-blur border-b p-4 z-50">
       <div className="container mx-auto flex justify-between items-center">
         <div className=" text-2xl font-bold">
-          <Link href="/">
-            Logo
+          <Link href="/" >
+          Medcrypta
           </Link>
         </div>
       <div className="hidden md:flex space-x-4 items-center">
-  <Link href="/" className="transition duration-300 ease-in-out relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-blue-400 after:to-purple-500 after:scale-x-0 after:origin-left after:transition-transform after:duration-500 hover:after:scale-x-100 hover:-translate-y-1">page 1</Link>
-  <Link href="/blog" className="transition duration-300 ease-in-out relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-blue-400 after:to-purple-500 after:scale-x-0 after:origin-left after:transition-transform after:duration-500 hover:after:scale-x-100 hover:-translate-y-1">page 2</Link>
-  <Link href="/about" className="transition duration-300 ease-in-out relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-blue-400 after:to-purple-500 after:scale-x-0 after:origin-left after:transition-transform after:duration-500 hover:after:scale-x-100 hover:-translate-y-1">About project</Link>
-  <Link href="/Contact" className="transition duration-300 ease-in-out relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-blue-400 after:to-purple-500 after:scale-x-0 after:origin-left after:transition-transform after:duration-500 hover:after:scale-x-100 hover:-translate-y-1">Contact</Link>
+  <Link href="/" className="transition duration-300 ease-in-out relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-[#15803d] after:to-[#4ade80] after:scale-x-0 after:origin-left after:transition-transform after:duration-500 hover:after:scale-x-100 hover:-translate-y-1">page 1</Link>
+  <Link href="/blog" className="transition duration-300 ease-in-out relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-[#15803d] after:to-[#4ade80] after:scale-x-0 after:origin-left after:transition-transform after:duration-500 hover:after:scale-x-100 hover:-translate-y-1">page 2</Link>
+  <Link href="/about" className="transition duration-300 ease-in-out relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-[#15803d] after:to-[#4ade80] after:scale-x-0 after:origin-left after:transition-transform after:duration-500 hover:after:scale-x-100 hover:-translate-y-1">About project</Link>
+  <Link href="/Contact" className="transition duration-300 ease-in-out relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-[#15803d] after:to-[#4ade80] after:scale-x-0 after:origin-left after:transition-transform after:duration-500 hover:after:scale-x-100 hover:-translate-y-1">Contact</Link>
 
 <div>
-    <Button className="mx-1 hover:bg-gray-200 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white transition duration-300 ease-in-out" variant="outline">Login</Button>
-    <Button className="mx-1 hover:bg-gray-200 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white transition duration-300 ease-in-out" variant="outline">Sign up</Button>
+    <Button className="mx-1 hover:bg-gray-200 hover:text-[#4ade80]  dark:hover:text-white transition duration-300 ease-in-out" variant="outline">Login</Button>
+    <Button className="mx-1 hover:bg-gray-200 hover:text-[#4ade80]  dark:hover:text-white transition duration-300 ease-in-out" variant="outline">Sign up</Button>
   </div>
   <ModeToggle />
 </div>
