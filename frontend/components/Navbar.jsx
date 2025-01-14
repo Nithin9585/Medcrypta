@@ -1,6 +1,6 @@
 // components/Navbar.js
 import Link from 'next/link';
-import { Button } from './ui/button';
+// import { Button } from './ui/button';
 import {
   Sheet,
   SheetContent,
@@ -37,8 +37,7 @@ export default function Navbar() {
 
 
 <div>
-    <Button className="mx-1   dark:hover:text-white transition duration-300 ease-in-out" variant="outline">Login</Button>
-    <Button className="mx-1    dark:hover:text-white transition duration-300 ease-in-out" variant="outline">Sign up</Button>
+    {/* <Button className="mx-1   dark:hover:text-white transition duration-300 ease-in-out" variant="outline">Logout</Button> */}
   </div>
   <ModeToggle />
 </div>
@@ -64,8 +63,7 @@ export default function Navbar() {
                     <Link href="/about" className=" hover:text-gray-200">page 3</Link>
                     <Link href="/Contact" className=" hover:text-gray-200">About Project</Link>
                     <div className="flex justify-center absolute bottom-0 left-0 w-full p-4">
-                      <Button className="mx-3" variant="outline">Login</Button>
-                      <Button className="mx-3" variant="outline">Sign up</Button>
+                      {/* <Button className="mx-3" variant="outline">Logout</Button> */}
                     </div>
                   </div>
                 </SheetDescription>

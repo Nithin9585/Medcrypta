@@ -1,118 +1,93 @@
-// "use client";
-// import { signIn } from "next-auth/react";
-// import { useState } from "react";
-// import { useRouter } from "next/navigation"; // Updated import
+'use client';
+import { Button } from "@/components/ui/button";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-// export default function SignIn() {
-//   const [username, setUsername] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState(null);
-//   const router = useRouter();
+export default function SignIn() {
+  const [showPassword, setPassword] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPasswordInput] = useState('');
+  const [error, setError] = useState(null);
+  const router = useRouter();
 
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setLoading(true);
-//     setError(null);
+  const callbackUrl = new URLSearchParams(window.location.search).get('callbackUrl') || '/';
 
-//     const result = await signIn("credentials", {
-//       redirect: false,
-//       username,
-//       password,
-//     });
+  const togglePassword = () => {
+    setPassword(!showPassword);
+  };
 
-//     console.log("SignIn Result:", result); 
-//     if (result?.error) {
-//       console.error(result.error); // Log the error for debugging
-//       setError("Invalid username or password");
-//     } else if (result?.user) {
-//       // Extract user role
-//       const role = result.user.role; 
-//       console.log("User role:", role); // Log role for debugging
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-//       // Redirect based on the user's role
-//       switch (role) {
-//         case "doctor":
-//           router.push("/Doctor/dashboard");
-//           break;
-//         case "patient":
-//           router.push("/Patient/dashboard");
-//           break;
-//         case "admin":
-//           router.push("/Admin/dashboard");
-//           break;
-//         case "pharmacist":
-//           router.push("/Pharmacist/dashboard");
-//           break;
-//         default:
-//           console.error("User role is not recognized:", role);
-//           setError("User role is not recognized.");
-//           break;
-//       }
-//     } else {
-//       setError("Something went wrong. Please try again.");
-//     }
+    const res = await signIn("credentials", {
+      redirect: false,
+      username,
+      password,
+      callbackUrl: callbackUrl,
+    });
 
-//     setLoading(false);
-//   };
+    if (res?.error) {
+      setError("Invalid username or password");
+    } else {
+      console.log(callbackUrl)
+      router.push(callbackUrl);
+    }
+  };
 
-//   return (
-//     <div className="min-h-screen flex justify-center items-center">
-//       <div className="p-8 rounded-lg shadow-lg w-full sm:w-96">
-//         <h1 className="text-3xl font-semibold text-center text-green-600 mb-8">
-//           Sign In
-//         </h1>
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="p-8 rounded-lg w-full sm:w-96">
+        <h1 className="text-2xl font-bold text-center text-green-600 mb-6">Sign In</h1>
 
-//         <form onSubmit={handleSubmit}>
-//           <div className="mb-6">
-//             <label
-//               htmlFor="username"
-//               className="block text-sm font-medium text-gray-700"
-//             >
-//               Username
-//             </label>
-//             <input
-//               type="text"
-//               id="username"
-//               value={username}
-//               onChange={(e) => setUsername(e.target.value)}
-//               required
-//               className="mt-2 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-300 ease-in-out"
-//             />
-//           </div>
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-600">
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Enter Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="mt-2 p-3 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              required
+            />
+          </div>
 
-//           <div className="mb-6">
-//             <label
-//               htmlFor="password"
-//               className="block text-sm font-medium text-gray-700"
-//             >
-//               Password
-//             </label>
-//             <input
-//               type="password"
-//               id="password"
-//               value={password}
-//               onChange={(e) => setPassword(e.target.value)}
-//               required
-//               className="mt-2 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-300 ease-in-out"
-//             />
-//           </div>
+          <div className="relative">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-600">
+              Password
+            </label>
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              name="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e) => setPasswordInput(e.target.value)}
+              className="mt-2 p-3 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              required
+            />
+            <button
+              type="button"
+              onClick={togglePassword}
+              className="absolute right-3 top-14 transform -translate-y-1/2 text-gray-500"
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
 
-//           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+          {error && <div className="text-red-500 text-sm">{error}</div>}
 
-//           <button
-//             type="submit"
-//             disabled={loading}
-//             className="w-full py-3 mt-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-200 ease-in-out"
-//           >
-//             {loading ? (
-//               <span className="animate-spin">Loading...</span>
-//             ) : (
-//               "Authenticate Role"
-//             )}
-//           </button>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// }
+          <Button className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors">
+            Authenticate
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
+}
