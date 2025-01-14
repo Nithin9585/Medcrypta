@@ -10,17 +10,12 @@ export default function PatientDashboard() {
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsBrowser(true); 
-    }
+    
     if (status === 'loading') return; 
 
     if (!session) {
-      const currentPath = window.location.pathname;
-      // Redirect to the sign-in page with the current route as callbackUrl
-      router.push(`/auth/signin?callbackUrl=${encodeURIComponent(currentPath)}`);    } else if (session?.user?.role !== 'patient') {
-      console.log(session)
-      router.push('/unauthorized');
+      sessionStorage.setItem("redirectPath", window.location.pathname);
+      router.push('/auth/signin');
     }
   }, [session, status, router]);
 

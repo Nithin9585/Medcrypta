@@ -1,7 +1,9 @@
+// SignIn.js
 'use client';
+
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -11,18 +13,10 @@ export default function SignIn() {
   const [password, setPasswordInput] = useState('');
   const [error, setError] = useState(null);
   const router = useRouter();
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const url = urlParams.get('callbackUrl');
-    if (url) {
-      setCallbackUrl(url);
-    }
-  }, []);
 
-  const togglePassword = () => {
-    setPassword(!showPassword);
-  };
+  const [redirectPath, setRedirectPath] = useState("/dashboard");  // Default redirect path after successful login
 
+  // On successful login, redirect to the dashboard or home page by default
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -30,16 +24,24 @@ export default function SignIn() {
       redirect: false,
       username,
       password,
-      callbackUrl: callbackUrl,
     });
 
     if (res?.error) {
       setError("Invalid username or password");
     } else {
-      console.log(callbackUrl)
-      router.push(callbackUrl);
+      // After successful login, redirect the user
+      router.push(redirectPath);
     }
   };
+
+  useEffect(() => {
+    // Check if there is a page the user was trying to visit before being redirected to the sign-in page
+    const storedRedirectPath = sessionStorage.getItem("redirectPath");
+    if (storedRedirectPath) {
+      setRedirectPath(storedRedirectPath);
+      sessionStorage.removeItem("redirectPath"); // Clean up the stored path
+    }
+  }, []);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -79,7 +81,7 @@ export default function SignIn() {
             />
             <button
               type="button"
-              onClick={togglePassword}
+              onClick={() => setPassword(!showPassword)}
               className="absolute right-3 top-14 transform -translate-y-1/2 text-gray-500"
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
