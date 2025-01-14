@@ -11,8 +11,13 @@ export default function SignIn() {
   const [password, setPasswordInput] = useState('');
   const [error, setError] = useState(null);
   const router = useRouter();
-
-  const callbackUrl = new URLSearchParams(window.location.search).get('callbackUrl') || '/';
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const url = urlParams.get('callbackUrl');
+    if (url) {
+      setCallbackUrl(url);
+    }
+  }, []);
 
   const togglePassword = () => {
     setPassword(!showPassword);
