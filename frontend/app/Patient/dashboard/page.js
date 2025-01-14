@@ -10,6 +10,9 @@ export default function PatientDashboard() {
   const { data: session, status } = useSession();
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsBrowser(true); 
+    }
     if (status === 'loading') return; 
 
     if (!session) {
