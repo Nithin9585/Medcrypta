@@ -20,7 +20,7 @@ export default function PatientDashboard() {
   }, [session, status, router]);
 
   if (status === 'loading' || !session || session?.user.role !== 'patient') {
-    return null; 
+    router.push('/unauthorized');
   }
 
   return (

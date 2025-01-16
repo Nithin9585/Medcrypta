@@ -15,12 +15,12 @@ export default function PatientDashboard() {
 
     if (!session) {
       sessionStorage.setItem("redirectPath", window.location.pathname);
-      router.push('/auth/signin');      console.log(session)
+      router.push('/auth/signin');      
     }
   }, [session, status, router]);
 
   if (status === 'loading' || !session || session?.user.role !== 'doctor') {
-    return null; 
+    router.push('/unauthorized');
   }
 
   return (
