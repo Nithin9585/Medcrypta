@@ -23,17 +23,12 @@ export default function PatientDashboard() {
   }
 
   return (
-    <div>
-      <h1>pharmasist Dashboard</h1>
-      <p>Welcome to pharmasist dashboard!</p>
-      <Button
-      onClick=
-      {
-        signOut
-      }>
-        Signout
-
-      </Button>
-    </div>
+    <div className="p-6 m-6">
+    <h1 className="text-2xl font-bold">Pharmasist Dashboard</h1>
+    <p className="mt-2 text-lg">Welcome to Pharmasist dashboard!</p>
+    <Button onClick={signOut} className="mt-4 px-4 py-2  text-white rounded">
+      Signout
+    </Button>
+  </div>
   );
 }
