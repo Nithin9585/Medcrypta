@@ -4,7 +4,29 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link'; 
+import Link from 'next/link';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
+
+// Register necessary components in Chart.js
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function DoctorDashboard() {
   const router = useRouter();
@@ -21,6 +43,35 @@ export default function DoctorDashboard() {
     { id: 2, time: '11:00 AM', patientName: 'John Doe', reason: 'General Checkup', prescriptionTime: '12:00 PM' },
   ]);
 
+  const [chartData, setChartData] = useState(null);
+
+  const generateRandomData = () => {
+    const labels = [];
+    const data = [];
+    for (let i = 1; i <= 7; i++) {
+      labels.push(`Day ${i}`);
+      data.push(Math.floor(Math.random() * 10) + 1); // Random number between 1 and 10
+    }
+    return { labels, data };
+  };
+
+  useEffect(() => {
+    const { labels, data } = generateRandomData();
+    setChartData({
+      labels,
+      datasets: [
+        {
+          label: 'Patients Visited',
+          data,
+          borderColor: 'rgb(45, 211, 131)',
+          backgroundColor: 'rgba(16, 101, 50, 0.56)',
+          fill: true,
+          tension: 0.1,
+        },
+      ],
+    });
+  }, []);
+
   useEffect(() => {
     if (status === 'loading') return;
 
@@ -32,41 +83,49 @@ export default function DoctorDashboard() {
     }
   }, [session, status, router]);
 
+  // Script loader for TradingView Widget
+ 
   if (status === 'loading' || !session || session?.user.role !== 'doctor') {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="p-6 m-6 grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-6">
-      
       <div className="md:col-span-1 lg:col-span-2 space-y-6">
-      <h1 className="text-2xl font-semibold">Hi Dr Bald !</h1>
-      <div className="border p-4 rounded-md shadow">
-  <img 
-    src="https://media.istockphoto.com/id/1293642425/photo/caucasian-young-doctor-man-sits-down-on-the-stairs-near-the-clinic-building-tired-and-unhappy.webp?a=1&s=612x612&w=0&k=20&c=op0A_zk9BvmdYXvhIaY6HfxZwgW58xF59xL9E-F7IYg=" 
-    alt="Doctor Profile" 
-    className="w-full h-50  object-cover rounded-md" 
-  />
-  <h2 className="text-lg font-bold mt-2">{session.user.name || 'Dr. John Doe'}</h2>
-  <p className="text-sm">Age: 45</p>
-  <p className="text-sm">Hospital: City Medical Center</p>
-  <p className="text-sm">Qualification: MD (General Medicine)</p>
-</div>
-
+        <h1 className="text-2xl font-semibold">Hi Dr Bald !</h1>
+        <div className="border p-4 rounded-md shadow">
+          <img 
+            src="https://media.istockphoto.com/id/1293642425/photo/caucasian-young-doctor-man-sits-down-on-the-stairs-near-the-clinic-building-tired-and-unhappy.webp?a=1&s=612x612&w=0&k=20&c=op0A_zk9BvmdYXvhIaY6HfxZwgW58xF59xL9E-F7IYg=" 
+            alt="Doctor Profile" 
+            className="w-full h-50  object-cover rounded-md" 
+          />
+          <h2 className="text-lg font-bold mt-2">{session.user.name || 'Dr. John Doe'}</h2>
+          <p className="text-sm">Age: 45</p>
+          <p className="text-sm">Hospital: City Medical Center</p>
+          <p className="text-sm">Qualification: MD (General Medicine)</p>
+        </div>
 
         <div className="border p-4 rounded-md shadow">
           <h2 className="text-xl font-semibold mb-4">Analytics</h2>
           <div className="h-64 bg-gray-200 flex items-center justify-center rounded">
-            <p>Graph Placeholder</p>
+            {/* Line Chart */}
+            {chartData && <Line data={chartData} />}
           </div>
         </div>
+
+  
       </div>
-      
 
       <div className="md:col-span-3 lg:col-span-3 space-y-6">
-      <Link href="/Doctor/Appointments">
-          <Button>Appointments</Button>
+        <Link href="/Doctor/Appointments">
+          <div className="relative inline-block">
+            <Button className="relative">
+              Appointments
+            </Button>
+            <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full animate-ping"></span>
+          </div>
         </Link>
+
         <div className="border p-4 rounded-md shadow">
           <h2 className="text-xl font-semibold mb-4">Ratings</h2>
           <div className="flex items-center space-x-2">
