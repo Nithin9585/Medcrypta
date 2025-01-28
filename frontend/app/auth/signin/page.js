@@ -35,7 +35,6 @@ export default function SignIn() {
   };
 
   useEffect(() => {
-    // Check if there is a page the user was trying to visit before being redirected to the sign-in page
     const storedRedirectPath = sessionStorage.getItem("redirectPath");
     if (storedRedirectPath) {
       setRedirectPath(storedRedirectPath);

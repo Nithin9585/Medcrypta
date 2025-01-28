@@ -1,5 +1,5 @@
 'use client';
-
+import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
@@ -114,8 +114,12 @@ export default function PatientDashboard() {
         </Link>
 
         <Link href="/Patient/BookAppointment">
-          <Button className="ml-4">Book Appointment</Button>
+          <Button className="m-4">Book Appointment</Button>
         </Link>
+
+         <Button onClick={() => signOut({ callbackUrl: '/auth/signin' })}>
+                  Sign Out
+          </Button>
 
         <h2 className="text-xl font-semibold mb-4">Appointment Schedule</h2>
         <table className="table-auto w-full border-collapse border border-gray-300 mb-4">

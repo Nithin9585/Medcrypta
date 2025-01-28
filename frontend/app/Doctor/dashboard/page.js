@@ -1,7 +1,6 @@
 'use client';
-
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -14,10 +13,9 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from 'chart.js';
 
-// Register necessary components in Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -31,32 +29,27 @@ ChartJS.register(
 export default function DoctorDashboard() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  
-  const reviews = [
-    { id: 1, username: 'John Doe', comment: 'Great doctor, very helpful', rating: 4 },
-    { id: 3, username: 'Jane Doe', comment: 'Not so helpful', rating: 2 },
-    { id: 2, username: 'Sam Smith', comment: 'Needs improvement', rating: 1 }
-  ];
-
-  const [historyAppointments, setHistoryAppointments] = useState([
-    { id: 1, time: '9:00 AM', patientName: 'Emily Davis', reason: 'Fever', prescriptionTime: '10:00 AM' },
-    { id: 2, time: '11:00 AM', patientName: 'John Doe', reason: 'General Checkup', prescriptionTime: '12:00 PM' },
-  ]);
-
+  const [appointments, setAppointments] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [chartData, setChartData] = useState(null);
 
-  const generateRandomData = () => {
+  useEffect(() => {
+    fetch('/api/appointments')
+      .then((res) => res.json())
+      .then((data) => setAppointments(data));
+
+    fetch('/api/reviews')
+      .then((res) => res.json())
+      .then((data) => setReviews(data));
+  }, []);
+
+  useEffect(() => {
     const labels = [];
     const data = [];
     for (let i = 1; i <= 7; i++) {
       labels.push(`Day ${i}`);
-      data.push(Math.floor(Math.random() * 10) + 1); // Random number between 1 and 10
+      data.push(Math.floor(Math.random() * 10) + 1);
     }
-    return { labels, data };
-  };
-
-  useEffect(() => {
-    const { labels, data } = generateRandomData();
     setChartData({
       labels,
       datasets: [
@@ -74,7 +67,6 @@ export default function DoctorDashboard() {
 
   useEffect(() => {
     if (status === 'loading') return;
-
     if (!session) {
       sessionStorage.setItem('redirectPath', window.location.pathname);
       router.push('/auth/signin');
@@ -83,21 +75,19 @@ export default function DoctorDashboard() {
     }
   }, [session, status, router]);
 
-  // Script loader for TradingView Widget
- 
   if (status === 'loading' || !session || session?.user.role !== 'doctor') {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
   return (
-    <div className="p-6 m-6 grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-6">
+    <div className="p-6 m-6 grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-6 rounded-lg ">
       <div className="md:col-span-1 lg:col-span-2 space-y-6">
-        <h1 className="text-2xl font-semibold">Hi Dr Bald !</h1>
+        <h1 className="text-2xl font-semibold">Hi Dr. Bald!</h1>
         <div className="border p-4 rounded-md shadow">
-          <img 
-            src="https://media.istockphoto.com/id/1293642425/photo/caucasian-young-doctor-man-sits-down-on-the-stairs-near-the-clinic-building-tired-and-unhappy.webp?a=1&s=612x612&w=0&k=20&c=op0A_zk9BvmdYXvhIaY6HfxZwgW58xF59xL9E-F7IYg=" 
-            alt="Doctor Profile" 
-            className="w-full h-50  object-cover rounded-md" 
+          <img
+            src="https://media.istockphoto.com/id/1293642425/photo/caucasian-young-doctor-man-sits-down-on-the-stairs-near-the-clinic-building-tired-and-unhappy.webp?a=1&s=612x612&w=0&k=20&c=op0A_zk9BvmdYXvhIaY6HfxZwgW58xF59xL9E-F7IYg="
+            alt="Doctor Profile"
+            className="w-full h-50 object-cover rounded-md"
           />
           <h2 className="text-lg font-bold mt-2">{session.user.name || 'Dr. John Doe'}</h2>
           <p className="text-sm">Age: 45</p>
@@ -108,23 +98,21 @@ export default function DoctorDashboard() {
         <div className="border p-4 rounded-md shadow">
           <h2 className="text-xl font-semibold mb-4">Analytics</h2>
           <div className="h-64 bg-gray-200 flex items-center justify-center rounded">
-            {/* Line Chart */}
             {chartData && <Line data={chartData} />}
           </div>
         </div>
-
-  
       </div>
 
       <div className="md:col-span-3 lg:col-span-3 space-y-6">
         <Link href="/Doctor/Appointments">
-          <div className="relative inline-block">
-            <Button className="relative">
-              Appointments
-            </Button>
+          <Button className="relative">
+            Appointments
             <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full animate-ping"></span>
-          </div>
+          </Button>
         </Link>
+        <Button onClick={() => signOut({ callbackUrl: '/auth/signin' })}>
+          Sign Out
+        </Button>
 
         <div className="border p-4 rounded-md shadow">
           <h2 className="text-xl font-semibold mb-4">Ratings</h2>
@@ -151,7 +139,7 @@ export default function DoctorDashboard() {
             </tr>
           </thead>
           <tbody>
-            {historyAppointments.map((appt) => (
+            {appointments.map((appt) => (
               <tr key={appt.id}>
                 <td className="border px-4 py-2">{appt.time}</td>
                 <td className="border px-4 py-2">{appt.patientName}</td>
@@ -172,16 +160,12 @@ export default function DoctorDashboard() {
               <h3 className="font-semibold">{review.username}</h3>
               <div className="flex items-center space-x-2">
                 <div className="flex">
-                  {Array(review.rating)
-                    .fill(0)
-                    .map((_, idx) => (
-                      <span key={idx} className="text-yellow-500 text-xl">★</span>
-                    ))}
-                  {Array(5 - review.rating)
-                    .fill(0)
-                    .map((_, idx) => (
-                      <span key={idx} className="text-gray-400 text-xl">★</span>
-                    ))}
+                  {Array(review.rating).fill(0).map((_, idx) => (
+                    <span key={idx} className="text-yellow-500 text-xl">★</span>
+                  ))}
+                  {Array(5 - review.rating).fill(0).map((_, idx) => (
+                    <span key={idx} className="text-gray-400 text-xl">★</span>
+                  ))}
                 </div>
                 <p className="text-sm">({review.rating}/5)</p>
               </div>
