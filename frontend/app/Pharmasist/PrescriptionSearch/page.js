@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { FaSearch } from 'react-icons/fa';
 
 export default function PharmacistPrescriptionPage() {
   const router = useRouter();
@@ -51,14 +52,16 @@ export default function PharmacistPrescriptionPage() {
               placeholder="Search Prescription ID..."
               className="w-full p-4 text-lg border border-gray-300 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-gray-500"
             />
+            <Button
+              onClick={handleSearchClick}
+              className="absolute top-1/2 right-4 transform -translate-y-1/2"
+            >
+              <FaSearch size={20} />
+            </Button>
           </div>
-          <Button onClick={handleSearchClick} className="w-full">
-            Search Prescription
-          </Button>
         </div>
 
         <h2 className="text-xl font-semibold mb-4 mt-6">Prescription History</h2>
-        {/* Add wrapper div for horizontal scrolling */}
         <div className="overflow-x-auto">
           <table className="table-auto min-w-full border-collapse border border-gray-300 mb-4">
             <thead>

@@ -1,97 +1,131 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { FaSearch } from 'react-icons/fa';
+import Link from 'next/link';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
-export default function PharmacistPrescriptionPage() {
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+export default function PharmacistDashboard() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [searchId, setSearchId] = useState('');
-  const [prescriptionHistory, setPrescriptionHistory] = useState([]);
-  const [filteredHistory, setFilteredHistory] = useState([]);
-
-  const mockHistory = [
-    { id: 1, patientName: 'John Doe', medicineName: 'Aspirin', prescribedBy: 'Dr. Smith', date: '2025-01-01' },
-    { id: 2, patientName: 'Jane Doe', medicineName: 'Paracetamol', prescribedBy: 'Dr. Brown', date: '2025-01-05' },
-    { id: 3, patientName: 'Mark Smith', medicineName: 'Ibuprofen', prescribedBy: 'Dr. Clark', date: '2025-01-10' },
-  ];
+  const [medicineHistory, setMedicineHistory] = useState([]);
+  const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
-    setPrescriptionHistory(mockHistory);
-    setFilteredHistory(mockHistory);
+    const labels = [];
+    const data = [];
+    for (let i = 1; i <= 7; i++) {
+      labels.push(`Day ${i}`);
+      data.push(Math.floor(Math.random() * 50) + 10); // Random number between 10 and 60
+    }
+
+    setChartData({
+      labels,
+      datasets: [
+        {
+          label: 'Medicines Dispensed',
+          data,
+          borderColor: 'rgb(45, 211, 131)',
+          backgroundColor: 'rgba(16, 101, 50, 0.56)',
+          fill: true,
+          tension: 0.1,
+        },
+      ],
+    });
   }, []);
 
-  const handleSearchChange = (e) => {
-    setSearchId(e.target.value);
-  };
-
-  const handleSearchClick = () => {
-    if (searchId === '') {
-      setFilteredHistory(prescriptionHistory); 
-    } else {
-      const filtered = prescriptionHistory.filter(
-        (history) => history.id.toString().includes(searchId)
-      );
-      setFilteredHistory(filtered);
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (!session) {
+      sessionStorage.setItem('redirectPath', window.location.pathname);
+      router.push('/auth/signin');
+    } else if (session?.user.role !== 'pharmasist') {
+      router.push('/unauthorized');
     }
-  };
+
+    fetch('/api/medicine-history')
+      .then((res) => res.json())
+      .then((data) => setMedicineHistory(data));
+  }, [session, status, router]);
+
+  if (status === 'loading' || !session || session?.user.role !== 'pharmasist') {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="p-6 m-6 space-y-6 rounded-lg">
-      <div className="space-y-4">
-        <h1 className="text-2xl font-semibold">Welcome, {session?.user?.name || 'Pharmacist'}</h1>
+    <div className="p-6 m-6 grid grid-cols-1 md:grid-cols-2 gap-6 rounded-lg">
+      <div className="space-y-6">
+        <h1 className="text-2xl font-semibold">Welcome, {session.user.name || 'Pharmacist'}</h1>
+        <div className="border p-4 rounded-md shadow">
+        <img
+        src="https://via.placeholder.com/300"
+        alt="Pharmacist Profile"
+        className="w-full h-56 object-cover rounded-md"
+        />
 
-        <div className="space-y-4">
-          <div className="relative">
-            <input
-              type="text"
-              value={searchId}
-              onChange={handleSearchChange}
-              placeholder="Search Prescription ID..."
-              className="w-full p-4 text-lg border border-gray-300 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-            />
-            <Button
-              onClick={handleSearchClick}
-              className="absolute top-1/2 right-4 transform -translate-y-1/2"
-            >
-              <FaSearch size={20} />
-            </Button>
+          <h2 className="text-lg font-bold mt-2">{session.user.name || 'John Doe'}</h2>
+          <p className="text-sm">Age: 40</p>
+          <p className="text-sm">Pharmacy: City Pharmacy</p>
+        </div>
+
+        <div className="border p-4 rounded-md shadow mt-6">
+          <h2 className="text-xl font-semibold mb-4">Medicines Dispensed Analytics</h2>
+          <div className="h-64 bg-gray-200 flex items-center justify-center rounded">
+            {chartData && <Line data={chartData} />}
           </div>
         </div>
+      </div>
 
-        <h2 className="text-xl font-semibold mb-4 mt-6">Prescription History</h2>
-        <div className="overflow-x-auto">
-          <table className="table-auto min-w-full border-collapse border border-gray-300 mb-4">
-            <thead>
-              <tr>
-                <th className="border px-4 py-2">Prescription ID</th>
-                <th className="border px-4 py-2">Patient Name</th>
-                <th className="border px-4 py-2">Medicine Name</th>
-                <th className="border px-4 py-2">Prescribed By</th>
-                <th className="border px-4 py-2">Date</th>
+      <div className="space-y-6 ">
+        <Link href="/Pharmasist/PrescriptionSearch" className='m-4'>
+          <Button>Search Prescription</Button>
+        </Link>
+        <Button onClick={() => signOut({ callbackUrl: '/auth/signin' })} className="mt-4">
+          Sign Out
+        </Button>
+
+        <h2 className="text-xl font-semibold mb-4">Medicine History</h2>
+        <table className="table-auto w-full border-collapse border border-gray-300 mb-4">
+          <thead>
+            <tr>
+              <th className="border px-4 py-2">Patient Name</th>
+              <th className="border px-4 py-2">Medicine Name</th>
+              <th className="border px-4 py-2">Prescribed By</th>
+              <th className="border px-4 py-2">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {medicineHistory.map((history, index) => (
+              <tr key={index}>
+                <td className="border px-4 py-2">{history.patientName}</td>
+                <td className="border px-4 py-2">{history.medicineName}</td>
+                <td className="border px-4 py-2">{history.prescribedBy}</td>
+                <td className="border px-4 py-2">{history.date}</td>
               </tr>
-            </thead>
-            <tbody>
-              {filteredHistory.length > 0 ? (
-                filteredHistory.map((history) => (
-                  <tr key={history.id}>
-                    <td className="border px-4 py-2">{history.id}</td>
-                    <td className="border px-4 py-2">{history.patientName}</td>
-                    <td className="border px-4 py-2">{history.medicineName}</td>
-                    <td className="border px-4 py-2">{history.prescribedBy}</td>
-                    <td className="border px-4 py-2">{history.date}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" className="border px-4 py-2 text-center">No prescriptions found for this ID.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
