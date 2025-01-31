@@ -69,14 +69,10 @@ export default function PharmacistDashboard() {
       .then((data) => setMedicineHistory(data));
   }, [session, status, router]);
 
-  if (status === 'loading' || !session || session?.user.role !== 'pharmasist') {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div className="p-6 m-6 grid grid-cols-1 md:grid-cols-2 gap-6 rounded-lg">
       <div className="space-y-6">
-        <h1 className="text-2xl font-semibold">Welcome, {session.user.name || 'Pharmacist'}</h1>
+        <h1 className="text-2xl font-semibold">Welcome,  'Pharmacist'</h1>
         <div className="border p-4 rounded-md shadow">
         <img
         src="https://via.placeholder.com/300"
@@ -84,7 +80,7 @@ export default function PharmacistDashboard() {
         className="w-full h-56 object-cover rounded-md"
         />
 
-          <h2 className="text-lg font-bold mt-2">{session.user.name || 'John Doe'}</h2>
+          <h2 className="text-lg font-bold mt-2"> 'John Doe'</h2>
           <p className="text-sm">Age: 40</p>
           <p className="text-sm">Pharmacy: City Pharmacy</p>
         </div>

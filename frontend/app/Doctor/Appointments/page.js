@@ -13,7 +13,6 @@ function Appointments() {
     { id: 3, time: '9:00 AM', patientName: 'Emily Davis', reason: 'Fever', prescriptionTime: '' },
   ]);
 
-  const [historyAppointments, setHistoryAppointments] = useState([]);
   const [selectedPrescriptionTime, setSelectedPrescriptionTime] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [acceptingAppointmentId, setAcceptingAppointmentId] = useState(null);

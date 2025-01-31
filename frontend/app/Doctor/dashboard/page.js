@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from 'components/ui/button';
 import Link from 'next/link';
 import { Line } from 'react-chartjs-2';
 import {

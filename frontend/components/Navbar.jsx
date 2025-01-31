@@ -37,7 +37,6 @@ export default function Navbar() {
 
 
 <div>
-    {/* <Button className="mx-1   dark:hover:text-white transition duration-300 ease-in-out" variant="outline">Logout</Button> */}
   </div>
   <ModeToggle />
 </div>
