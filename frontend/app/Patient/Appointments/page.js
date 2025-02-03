@@ -1,20 +1,16 @@
-// Upcoming Appointments Page
 'use client';
 
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-
+import { upcomingAppointments } from '@/components/config/Patient.config';
 export default function UpcomingAppointments() {
   const { data: session, status } = useSession();
 
-  const upcomingAppointments = [
-    { id: 1, date: '2025-02-10', doctor: 'Dr. John Doe', reason: 'Routine Checkup', time: '10:00 AM' },
-    { id: 2, date: '2025-02-15', doctor: 'Dr. Emily Smith', reason: 'Dental Cleaning', time: '2:00 PM' },
-  ];
 
   if (status === 'loading') return <div>Loading...</div>;
 
+  // If no session (not signed in)
   if (!session) return <div>Please sign in to view your appointments.</div>;
 
   return (

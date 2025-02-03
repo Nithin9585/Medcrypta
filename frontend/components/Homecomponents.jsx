@@ -9,10 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from './ui/card';
-
+import Welcome from './Welcome';
 function Homecomponents() {
   return (
     <div className="min-h-screen font-[family-name:var(--font-geist-sans)] p-8">
+      <div>
+      <Welcome/>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {buttonData.map((button, index) => (
           <Card key={index} className="hover:shadow-lg transition-shadow">
