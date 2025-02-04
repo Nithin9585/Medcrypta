@@ -34,7 +34,7 @@ function Homecomponents() {
   }
 
   return (
-    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] p-8">
+    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] p-2">
       <div className='border-b-2'>
         <Welcome />
       </div>

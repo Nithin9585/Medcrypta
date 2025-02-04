@@ -12,12 +12,12 @@ function Welcome() {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen bg-background ">
-      <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold w-full max-w-2xl text-center">
-      <span className="inline-block animate-typewriter overflow-hidden whitespace-nowrap pr-2  dark:border-white relative">
-  Welcome to <span className="text-green-500">MedCrypta</span>.
-  <span className="animate-blink absolute inset-y-0 right-0 w-px bg-black dark:bg-white"></span> 
-</span>
+    <div className="flex flex-col justify-center items-center h-screen bg-background  sm:px-7">
+      <h1 className="text-4xl sm:text-4xl md:text-6xl font-bold w-full max-w-full text-center">
+        <span className="inline-block animate-typewriter overflow-hidden whitespace-nowrap pr-2 dark:border-white relative">
+          Welcome to <span className="text-green-500">MedCrypta</span>.
+          <span className="animate-blink absolute inset-y-0 right-0 w-px bg-black dark:bg-white"></span> 
+        </span>
       </h1>
 
       {showParagraph && (
