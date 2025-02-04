@@ -20,20 +20,17 @@ export default function Navbar() {
         </div>
       <div className="hidden md:flex space-x-4 items-center">
       <Link href="/" className="relative inline-block hover:text-gray-600 dark:hover:text-white ">
-  Page 1
-</Link>
+Home</Link>
 
-<Link href="/blog" className="relative inline-block hover:text-gray-600  dark:hover:text-white">
-  Page 2
-</Link>
-
-<Link href="/about" className="relative inline-block hover:text-gray-600  dark:hover:text-white">
-  About Project
-</Link>
 
 <Link href="/Contact" className="relative inline-block hover:text-gray-600 dark:hover:text-white">
   Contact
 </Link>
+<Link href="/about" className="relative inline-block hover:text-gray-600  dark:hover:text-white">
+  About Project
+</Link>
+
+
 
 
 <div>
@@ -57,12 +54,10 @@ export default function Navbar() {
                 </SheetTitle>
                 <SheetDescription>
                   <div className="flex pt-10 flex-col gap-8 items-center">
-                    <Link href="/" className=" hover:text-gray-200">About us</Link>
-                    <Link href="/blog" className=" hover:text-gray-200">page 2</Link>
-                    <Link href="/about" className=" hover:text-gray-200">page 3</Link>
-                    <Link href="/Contact" className=" hover:text-gray-200">About Project</Link>
+                    <Link href="/" className=" hover:text-gray-200">Home</Link>
+                    <Link href="/Contact" className=" hover:text-gray-200">Contact</Link>
+                    <Link href="/about" className=" hover:text-gray-200">About Project</Link>
                     <div className="flex justify-center absolute bottom-0 left-0 w-full p-4">
-                      {/* <Button className="mx-3" variant="outline">Logout</Button> */}
                     </div>
                   </div>
                 </SheetDescription>

@@ -9,10 +9,8 @@ export default function Footer() {
                 </div>
                 <div className="flex space-x-4 mb-4 md:mb-0">
                     <a href="/" className="hover:underline">Home</a>
-                    <a href="/blog" className="hover:underline">Blog</a>
                     <a href="/Contact" className="hover:underline">Contact</a>
-                    <a href="/about" className="hover:underline">About</a>
-
+                    <a href="/about" className="hover:underline">About us</a>
                 </div>
                <div className="flex space-x-4 pr-5">
                 <h7>Follow us :</h7>
