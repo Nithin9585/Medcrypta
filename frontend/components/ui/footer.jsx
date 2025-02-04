@@ -3,9 +3,9 @@ export default function Footer() {
     return (
         <footer className="border-t border-[#166534] py-4 mt-4">
             <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-                <div className="mb-4 md:mb-0">
+                <div className="mb-4 p-4  md:mb-0">
                 <Link href="/" className="relative inline-block text-gray-500 hover:text-gray-600 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-[20px] after:h-[2px] after:bg-gradient-to-r after:from-[#38ef7d] after:to-[#4ade80] after:transition-all after:duration-500 hover:after:w-full hover:after:scale-x-100 hover:after:translate-y-1">
-                Medcrypta<span className="text-green-500 pl-2 ">+</span></Link>
+                Medcrypta<span className="text-green-500  ">+</span></Link>
                 </div>
                 <div className="flex space-x-4 mb-4 md:mb-0">
                     <a href="/" className="hover:underline">Home</a>
