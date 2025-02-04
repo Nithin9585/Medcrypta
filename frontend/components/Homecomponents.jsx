@@ -28,11 +28,14 @@ function Homecomponents() {
       },
     }),
   };
-
   const imageVariants = {
-    hover: { scale: 1.1, transition: { duration: 0.3 } }
-  }
-
+    hover: { 
+      scale: 1.1, 
+      y: -20,  
+      transition: { duration: 0.3 } 
+    }
+  };
+  
   return (
     <div className="min-h-screen font-[family-name:var(--font-geist-sans)] p-2">
       <div className='border-b-2'>
@@ -42,7 +45,7 @@ function Homecomponents() {
         {buttonData.map((button, index) => (
           <motion.Card
             key={index}
-            className="hover:shadow-lg transition-shadow hover:bg-green-100  hover:border-3 dark:hover:border-green-600 rounded-md dark:hover:border-3 dark:hover:bg-green-900"
+            className="hover:shadow-lg transition-shadow hover:bg-green-100 hover:border-3 dark:hover:border-green-600 rounded-md dark:hover:border-3 dark:hover:bg-green-900"
             variants={cardVariants}
             initial="hidden"
             whileInView={{
@@ -62,12 +65,12 @@ function Homecomponents() {
                 {button.description || 'Action card'}
               </CardDescription>
             </CardHeader>
-            <CardContent className="relative">
+            <CardContent className="relative overflow-hidden"> {/* Added overflow-hidden */}
               {button.imgsrc && (
                 <motion.img
                   src={button.imgsrc}
                   alt={button.name}
-                  className="w-full h-48 object-cover rounded-md transition-transform duration-300 ease-in-out"
+                  className="w-full h-80 bg-white object-cover rounded-md transition-transform duration-300 ease-in-out"
                   whileHover="hover"
                   variants={imageVariants}
                 />
