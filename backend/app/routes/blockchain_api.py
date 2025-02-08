@@ -25,3 +25,18 @@ def get_block(index):
         return jsonify({"error": "Block not found"}), 404
     
     return jsonify(block.__dict__), 200
+
+@blockchain_bp.route('/get_chain', methods=['GET'])
+def get_chain():
+    chain_data = [block.__dict__ for block in blockchain.chain]
+    return jsonify(chain_data), 200
+
+@blockchain_bp.route('/get_last_block', methods=['GET'])
+def get_last_block():
+    last_block = blockchain.get_last_block()
+    return jsonify(last_block.__dict__), 200
+
+@blockchain_bp.route('/is_chain_valid', methods=['GET'])
+def is_chain_valid():
+    is_valid = blockchain.is_chain_valid()
+    return jsonify({"is_valid": is_valid}), 200
