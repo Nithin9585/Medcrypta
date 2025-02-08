@@ -19,6 +19,7 @@ class MongoDBManager:
                 cls._db = cls._client[db_name]
                 cls._logger = app.logger
                 atexit.register(cls.close_connection)
+                cls._db.blockchain.create_index("index", unique=True)
                 cls._logger.info(
                     f"MongoDB connection established with database '{db_name}'."
                 )

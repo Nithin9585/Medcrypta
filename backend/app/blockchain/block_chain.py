@@ -2,6 +2,7 @@ import hashlib
 import json
 from time import time
 from typing import Any, Dict, List
+from app.utils.mongo_wrapper import MongoDBManager
 
 
 class Block:
@@ -70,3 +71,14 @@ class Blockchain:
             if current.previous_hash != previous.hash:
                 return False
         return True
+    def save_chain(self) -> None:
+        with MongoDBManager() as db:
+            db.blockchain.replace_one({}, {"chain": [block.__dict__ for block in self.chain]}, upsert=True)
+
+    def load_chain(self) -> None:
+        with MongoDBManager() as db:
+            chain_data = db.blockchain.find_one()
+            if chain_data:
+                self.chain = [Block(**block_data) for block_data in chain_data["chain"]]
+            else:
+                self.create_genesis_block()
