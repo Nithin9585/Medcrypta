@@ -1,8 +1,7 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import logging
 from bson import ObjectId
-
 from app.utils.encryption_utils import decrypt_data
 from ..utils.mongo_wrapper import MongoDBManager
 from .middleware import role_required
@@ -28,7 +27,7 @@ def approve_registration(registration_id):
     approver_roles = approver.get("roles", [])
     logging.info(
         f"User {current_user} (Roles: {
-        approver_roles}) is attempting to approve a registration."
+    approver_roles}) is attempting to approve a registration."
     )
 
     try:
@@ -39,7 +38,7 @@ def approve_registration(registration_id):
         if not pending_user:
             logging.warning(
                 f"Invalid approval attempt: No pending registration for ID {
-                registration_id}"
+            registration_id}"
             )
             return jsonify({"error": "Pending registration not found"}), 404
     except Exception as e:
@@ -52,7 +51,7 @@ def approve_registration(registration_id):
     if not any(role in allowed_approvers for role in approver_roles):
         logging.warning(
             f"User {current_user} (Roles: {
-            approver_roles}) attempted unauthorized approval for {requested_role}."
+        approver_roles}) attempted unauthorized approval for {requested_role}."
         )
         return (
             jsonify(
@@ -73,16 +72,16 @@ def approve_registration(registration_id):
         ):
             db["pending_registrations"].delete_one({"_id": reg_id})
             logging.info(
-                f"User {current_user} approved registration for {
-                pending_user['username']} ({requested_role})."
+                f"User {current_user } approved registration for {
+            pending_user ['username']} ({requested_role })."
             )
             return jsonify({"success": True, "message": "Registration approved"}), 200
         else:
             logging.error(
                 f"Approval failed: Could not register user {
-                pending_user['username']}"
+            pending_user ['username']}"
             )
             return jsonify({"error": "Failed to approve registration"}), 500
     except Exception as e:
-        logging.error(f"Error approving registration: {e}")
+        logging.error(f"Error approving registration: {e }")
         return jsonify({"error": str(e)}), 500
