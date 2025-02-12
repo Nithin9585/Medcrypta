@@ -1,47 +1,104 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from app.blockchain.block_chain import Blockchain
+from .middleware import role_required
 
 blockchain_bp = Blueprint("blockchain", __name__, url_prefix="/api/blockchain")
 
 # Initialize the blockchain
 blockchain = Blockchain(validator_identity="validator")
 
+@blockchain_bp.route('/add_transaction', methods=['POST'])
+@jwt_required()
+@role_required('validator')
+def add_transaction():
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid data"}), 400
+    
+    blockchain.add_transaction(data)
+    return jsonify({"message": "Transaction added"}), 201
 
 @blockchain_bp.route("/add_block", methods=["POST"])
 @jwt_required()
+@role_required('validator')
 def add_block():
     data = request.json
     validator = request.headers.get("Validator")
+    consensus = request.args.get('consensus', 'PoW')
+    difficulty = int(request.args.get('difficulty', 2))
     if not data or not validator:
         return jsonify({"error": "Invalid data or validator"}), 400
+    try:
+        block = blockchain.add_block(validator, consensus, difficulty)
+        return jsonify({"message": "Block added", "block": block.__dict__}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-    block = blockchain.add_block(data, validator)
-    return jsonify({"message": "Block added", "block": block.__dict__}), 201
 
+@blockchain_bp.route('/deploy_contract', methods=['POST'])
+@jwt_required()
+@role_required('validator')
+def deploy_contract():
+    data = request.json
+    contract_name = data.get('contract_name')
+    contract_code = data.get('contract_code')
+    if not contract_name or not contract_code:
+        return jsonify({"error": "Invalid data"}), 400
+    
+    blockchain.deploy_contract(contract_name, contract_code)
+    return jsonify({"message": "Contract deployed"}), 201
+
+@blockchain_bp.route('/execute_contract', methods=['POST'])
+@jwt_required()
+@role_required('validator')
+def execute_contract():
+    data = request.json
+    contract_name = data.get('contract_name')
+    function_name = data.get('function_name')
+    args = data.get('args', [])
+    if not contract_name or not function_name:
+        return jsonify({"error": "Invalid data"}), 400
+    try:
+        result = blockchain.execute_contract(contract_name, function_name, *args)
+        return jsonify({"message": "Contract executed", "result": result}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @blockchain_bp.route("/get_block/<int:index>", methods=["GET"])
 def get_block(index):
-    block = next((blk for blk in blockchain.chain if blk.index == index), None)
-    if not block:
-        return jsonify({"error": "Block not found"}), 404
+    try:
+        block = next((blk for blk in blockchain.chain if blk.index == index), None)
+        if not block:
+            return jsonify({"error": "Block not found"}), 404
 
-    return jsonify(block.__dict__), 200
+        return jsonify(block.__dict__), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @blockchain_bp.route("/get_chain", methods=["GET"])
 def get_chain():
-    chain_data = [block.__dict__ for block in blockchain.chain]
-    return jsonify(chain_data), 200
+    try:
+        chain_data = [block.__dict__ for block in blockchain.chain]
+        return jsonify(chain_data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @blockchain_bp.route("/get_last_block", methods=["GET"])
 def get_last_block():
-    last_block = blockchain.get_last_block()
-    return jsonify(last_block.__dict__), 200
+    try:
+        last_block = blockchain.get_last_block()
+        return jsonify(last_block.__dict__), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @blockchain_bp.route("/is_chain_valid", methods=["GET"])
 def is_chain_valid():
-    is_valid = blockchain.is_chain_valid()
-    return jsonify({"is_valid": is_valid}), 200
+    try:
+        is_valid = blockchain.is_chain_valid()
+        return jsonify({"is_valid": is_valid}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
