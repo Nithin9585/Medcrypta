@@ -34,7 +34,7 @@ def register_patient():
     if missing_fields:
         logging.error(
             f"Missing fields for patient registration: {
-            ', '.join(missing_fields)}"
+        ', '.join (missing_fields )}"
         )
         return jsonify(error_response), 400
 
@@ -47,7 +47,7 @@ def register_patient():
 
     try:
         if Patient.register(username, password, details):
-            logging.info(f"Patient {username} registered successfully.")
+            logging.info(f"Patient {username } registered successfully.")
             return (
                 jsonify(
                     {"success": True, "message": "Patient registered successfully"}
@@ -57,7 +57,7 @@ def register_patient():
         else:
             return jsonify({"error": "Patient registration failed"}), 500
     except Exception as e:
-        logging.error(f"Error during patient registration: {e}")
+        logging.error(f"Error during patient registration: {e }")
         return jsonify({"error": str(e)}), 500
 
 
@@ -71,7 +71,7 @@ def register_other_roles():
     if missing_fields:
         logging.error(
             f"Missing fields for registration: {
-            ', '.join(missing_fields)}"
+        ', '.join (missing_fields )}"
         )
         return jsonify(error_response), 400
 
@@ -87,7 +87,7 @@ def register_other_roles():
         return jsonify({"error": "'details' must be a dictionary."}), 400
 
     if role not in role_class_map:
-        return jsonify({"error": f"Invalid role: {role}"}), 400
+        return jsonify({"error": f"Invalid role: {role }"}), 400
 
     db = MongoDBManager.get_db()
 
@@ -103,8 +103,8 @@ def register_other_roles():
         result = db["pending_registrations"].insert_one(pending_user)
 
         logging.info(
-            f"New {role} registration request for {
-            username} pending approval."
+            f"New {role } registration request for {
+        username } pending approval."
         )
         return (
             jsonify(
@@ -118,7 +118,7 @@ def register_other_roles():
         )
 
     except Exception as e:
-        logging.error(f"Error during {role} registration request: {e}")
+        logging.error(f"Error during {role } registration request: {e }")
         return jsonify({"error": str(e)}), 500
 
 
@@ -137,7 +137,7 @@ def login():
 
     role_class = role_class_map.get(role)
     if not role_class:
-        return jsonify({"error": f"Invalid role: {role}"}), 400
+        return jsonify({"error": f"Invalid role: {role }"}), 400
 
     try:
 
@@ -160,7 +160,7 @@ def login():
         else:
             return jsonify({"error": "Invalid username or password"}), 401
     except Exception as e:
-        logging.error(f"Error during login: {e}")
+        logging.error(f"Error during login: {e }")
         return jsonify({"error": str(e)}), 500
 
 
