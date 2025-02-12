@@ -15,6 +15,8 @@ class Block:
         data: Dict[str, Any],
         previous_hash: str,
         validator: str,
+        nonce: int = 0,
+        hash: str = None
     ) -> None:
         self.index: int = index
         self.timestamp: float = timestamp
@@ -22,6 +24,8 @@ class Block:
         self.previous_hash: str = previous_hash
         self.validator: str = validator
         self.hash: str = self.compute_hash()
+        self.nonce: int = nonce
+        self.hash: str = hash or self.compute_hash()
 
     def compute_hash(self) -> str:
         block_string: str = json.dumps(
@@ -42,6 +46,7 @@ class Blockchain:
         self.chain: List[Block] = []
         self.pending_transactions: List[Dict[str, Any]] = []
         self.smart_contracts: Dict[str, SmartContract] = {}
+        self.validators: List[str] = [validator_identity]
         self.validator_identity: str = validator_identity
         self.create_genesis_block()
         self.load_chain()
@@ -67,9 +72,14 @@ class Blockchain:
     def proof_of_stake(self) -> str:
         return random.choice(self.validators)
     
+    def practical_byzantine_fault_tolerance(self, block: Block) -> str:
+        # Simplified PBFT implementation for demonstration purposes
+        # In a real-world scenario, this would involve multiple rounds of voting and consensus among nodes
+        return block.compute_hash()
+    
     def create_genesis_block(self) -> None:
         genesis_block: Block = Block(
-            0, time(), {"info": "Genesis Block"}, "0", "Genesis"
+            0, time(), {"info": "Genesis Block"}, "0", self.validator_identity
         )
         self.chain.append(genesis_block)
         self.save_chain()
@@ -82,18 +92,18 @@ class Blockchain:
 
     def add_block(self, data: Dict[str, Any], validator: str, consensus: str = 'PoW', difficulty: int = 2) -> Block:
         last_block: Block = self.get_last_block()
-        new_block: Block = Block(
-            index=last_block.index + 1,
-            timestamp=time(),
-            data=data,
-            previous_hash=last_block.hash,
-            validator=validator,
-        )
+        new_block = Block(len(self.chain),
+                           time(), 
+                           {"transactions": self.pending_transactions}, 
+                           last_block.hash, 
+                           validator)
         if consensus == 'PoW':
             new_block.hash = self.proof_of_work(new_block, difficulty)
         elif consensus == 'PoS':
             new_block.validator = self.proof_of_stake()
             new_block.hash = new_block.compute_hash()
+        elif consensus == 'PBFT':
+            new_block.hash = self.practical_byzantine_fault_tolerance(new_block)
         self.chain.append(new_block)
         self.pending_transactions = []
         self.save_chain()
@@ -128,3 +138,9 @@ class SmartContract:
     def execute(self, function_name: str, *args) -> Any:
         exec(self.contract_code)
         return locals()[function_name](*args)
+    
+    def update_state(self, key: str, value: Any) -> None:
+        self.state[key] = value
+
+    def get_state(self, key: str) -> Any:
+        return self.state.get(key)
