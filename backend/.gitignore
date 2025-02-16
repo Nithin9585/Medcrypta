@@ -2,3 +2,4 @@
 __pycache__
 .pytest_cache
 mongo_db_test_conn.py
+*_deprecated.py
