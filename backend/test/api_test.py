@@ -9,36 +9,65 @@ TEST_USER = {
     "role": "patient",
     "username": "test_user_1",
     "password": "test_password",
-    "details": {
-        "name": "Test User",
-        "age": 30,
-        "gender": "male"
-    }
+    "details": {"name": "Test User", "age": 30, "gender": "male"},
 }
+
+
+def cleanup_user(role, username):
+
+    pass
 
 
 def test_register_user():
 
     try:
 
-        response = requests .post(f"{BASE_URL}/register", json=TEST_USER)
-        print(response .json())
+        response = requests.post(f"{BASE_URL }/register", json=TEST_USER)
+        print(response.json())
 
-        assert response .status_code == 201, f"Expected 201 but got {
-            response .status_code}"
-        print(response .json)
+        assert (
+            response.status_code == 201
+        ), f"Expected 201 but got {
+        response .status_code }"
+        print(response.json)
 
-        assert response .json() == {
+        assert response.json() == {
             "success": True,
-            "message": "Patient registered successfully"
-        }, f"Unexpected response: {response .json()}"
+            "message": "Patient registered successfully",
+        }, f"Unexpected response: {response .json ()}"
 
         print("User registration test passed successfully!")
 
-    except requests .exceptions .RequestException as e:
-        print(f"Error during API request: {e}")
+    except requests.exceptions.RequestException as e:
+        print(f"Error during API request: {e }")
     except AssertionError as e:
-        print(f"Assertion failed: {e}")
+        print(f"Assertion failed: {e }")
 
 
-test_register_user()
+def test_login_user():
+
+    login_data = {
+        "role": TEST_USER["role"],
+        "username": TEST_USER["username"],
+        "password": TEST_USER["password"],
+    }
+    response = requests.post(f"{BASE_URL }/login", json=login_data)
+
+    assert response.status_code == 200
+    assert response.json() == {"success": True, "message": "Login successful"}
+
+    cleanup_user(TEST_USER["role"], TEST_USER["username"])
+
+
+def test_get_user_details():
+
+    details_data = {"role": TEST_USER["role"], "username": TEST_USER["username"]}
+    response = requests.get(f"{BASE_URL }/details", json=details_data)
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "success": True,
+        "data": {"username": TEST_USER["username"], **TEST_USER["details"]},
+    }
+
+    cleanup_user(TEST_USER["role"], TEST_USER["username"])

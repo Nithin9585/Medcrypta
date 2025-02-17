@@ -1,91 +1,175 @@
+from app.loader import ROLE_HEIRARCHY
+from app.utils.encryption_utils import encrypt_data
+from app.utils.mongo_wrapper import MongoDBManager
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import logging
 from flask import Blueprint, request, jsonify
-from ..utils .mongo_utils import add_user, verify_user, add_user_details, get_user_details
-main_bp = Blueprint('main', __name__, url_prefix='/api')
+from flask_jwt_extended import get_jwt_identity
+from .__init__ import role_class_map
+from app.routes.middleware import role_required
+
+from ..utils.roles import Patient, Doctor, Validator
+
+main_bp = Blueprint("main", __name__, url_prefix="/api")
 
 
 def check_required_fields(data, required_fields):
 
-    missing_fields = [
-        field for field in required_fields if not data .get(field)]
-
+    missing_fields = [field for field in required_fields if not data.get(field)]
     if missing_fields:
-        error_response = {"error": "Missing required fields",
-                          "missing_fields": missing_fields}
+        error_response = {
+            "error": "Missing required fields",
+            "missing_fields": missing_fields,
+        }
         return missing_fields, error_response
-
     return [], None
 
 
-@main_bp .route('/register', methods=['POST'])
-def register():
+@main_bp.route("/register/patient", methods=["POST"])
+def register_patient():
 
-    data = request .json
-    required_fields = ['role', 'username', 'password', 'details']
-
-    missing_fields, error_response = check_required_fields(
-        data, required_fields)
-
+    data = request.json
+    required_fields = ["username", "password", "details"]
+    missing_fields, error_response = check_required_fields(data, required_fields)
     if missing_fields:
-        logging .error(f"Missing fields: {', '.join(missing_fields)}")
+        logging.error(
+            f"Missing fields for patient registration: {
+        ', '.join (missing_fields )}"
+        )
         return jsonify(error_response), 400
 
-    role, username, password, details = (
-        data .get(field)for field in required_fields)
+    username = data.get("username")
+    password = data.get("password")
+    details = data.get("details")
 
     if not isinstance(details, dict):
         return jsonify({"error": "'details' must be a dictionary."}), 400
 
-    auth_collection = f"{role}s_auth"
-    details_collection = f"{role}s_details"
-
     try:
-        add_user(auth_collection, username, password)
-        add_user_details(details_collection, {
-            "username": username, **details})
-        return jsonify({"success": True, "message": f"{role .capitalize()} registered successfully"}), 201
+        if Patient.register(username, password, details):
+            logging.info(f"Patient {username } registered successfully.")
+            return (
+                jsonify(
+                    {"success": True, "message": "Patient registered successfully"}
+                ),
+                201,
+            )
+        else:
+            return jsonify({"error": "Patient registration failed"}), 500
     except Exception as e:
-        logging .error(f"Error during registration: {e}")
+        logging.error(f"Error during patient registration: {e }")
         return jsonify({"error": str(e)}), 500
 
 
-@main_bp .route('/login', methods=['POST'])
+@main_bp.route("/register", methods=["POST"])
+def register_other_roles():
+
+    data = request.json
+    required_fields = ["role", "username", "password", "details"]
+    missing_fields, error_response = check_required_fields(data, required_fields)
+
+    if missing_fields:
+        logging.error(
+            f"Missing fields for registration: {
+        ', '.join (missing_fields )}"
+        )
+        return jsonify(error_response), 400
+
+    role = data.get("role").lower()
+    username = data.get("username")
+    password = data.get("password")
+    details = data.get("details")
+
+    if role == "patient":
+        return jsonify({"error": "Use /register/patient for patient registration"}), 400
+
+    if not isinstance(details, dict):
+        return jsonify({"error": "'details' must be a dictionary."}), 400
+
+    if role not in role_class_map:
+        return jsonify({"error": f"Invalid role: {role }"}), 400
+
+    db = MongoDBManager.get_db()
+
+    try:
+        pending_user = {
+            "role": role,
+            "username": username,
+            "password": encrypt_data(password),
+            "details": details,
+            "status": "pending",
+            "approver_roles": ROLE_HEIRARCHY.get(role, []),
+        }
+        result = db["pending_registrations"].insert_one(pending_user)
+
+        logging.info(
+            f"New {role } registration request for {
+        username } pending approval."
+        )
+        return (
+            jsonify(
+                {
+                    "success": True,
+                    "message": f"Registration request submitted for approval",
+                    "pending_id": str(result.inserted_id),
+                }
+            ),
+            201,
+        )
+
+    except Exception as e:
+        logging.error(f"Error during {role } registration request: {e }")
+        return jsonify({"error": str(e)}), 500
+
+
+@main_bp.route("/login", methods=["POST"])
 def login():
 
-    data = request .json
-    required_fields = ['role', 'username', 'password']
-
-    missing_fields, error_response = check_required_fields(
-        data, required_fields)
-
+    data = request.json
+    required_fields = ["role", "username", "password"]
+    missing_fields, error_response = check_required_fields(data, required_fields)
     if missing_fields:
         return jsonify(error_response), 400
 
-    role, username, password = (data[field]for field in required_fields)
+    role = data.get("role").lower()
+    username = data.get("username")
+    password = data.get("password")
 
-    auth_collection = f"{role}s_auth"
+    role_class = role_class_map.get(role)
+    if not role_class:
+        return jsonify({"error": f"Invalid role: {role }"}), 400
 
-    if verify_user(auth_collection, username, password):
-        return jsonify({"success": True, "message": "Login successful"}), 200
-    return jsonify({"error": "Invalid username or password"}), 401
+    try:
+
+        user_instance = role_class(username, password)
+        if user_instance.verify():
+
+            access_token = create_access_token(
+                identity=username, additional_claims={"roles": [role]}
+            )
+            return (
+                jsonify(
+                    {
+                        "success": True,
+                        "message": "Login successful",
+                        "access_token": access_token,
+                    }
+                ),
+                200,
+            )
+        else:
+            return jsonify({"error": "Invalid username or password"}), 401
+    except Exception as e:
+        logging.error(f"Error during login: {e }")
+        return jsonify({"error": str(e)}), 500
 
 
-@main_bp .route('/details', methods=['GET'])
-def get_details():
+@main_bp.route("/doctor/details", methods=["GET"])
+@role_required("doctor")
+def doctor_details():
 
-    data = request .json
-    required_fields = ['role', 'username']
-    missing_fields, error_response = check_required_fields(
-        data, required_fields)
-
-    if missing_fields:
-        return jsonify(error_response), 400
-
-    role, username = (data[field]for field in required_fields)
-
-    details_collection = f"{role}s_details"
-
-    details = get_user_details(details_collection, username)
+    current_user = get_jwt_identity()
+    details = Doctor.get_details(current_user)
     if details:
         return jsonify({"success": True, "data": details}), 200
     return jsonify({"error": "User not found"}), 404
@@ -162,3 +246,26 @@ def Registerdoctor():
     # except Exception as e:
     #     logging.error(f"Error during doctor registration: {e}", exc_info=True)
     #     return jsonify({"error": "An error occurred during registration. Please try again later."}), 500
+    return jsonify({"error": "Doctor details not found"}), 404
+
+
+@main_bp.route("/patient/details", methods=["GET"])
+@role_required("patient")
+def patient_details():
+
+    current_user = get_jwt_identity()
+    details = Patient.get_details(current_user)
+    if details:
+        return jsonify({"success": True, "data": details}), 200
+    return jsonify({"error": "Patient details not found"}), 404
+
+
+@main_bp.route("/validator/details", methods=["GET"])
+@role_required("validator")
+def validator_details():
+
+    current_user = get_jwt_identity()
+    details = Validator.get_details(current_user)
+    if details:
+        return jsonify({"success": True, "data": details}), 200
+    return jsonify({"error": "Validator details not found"}), 404
