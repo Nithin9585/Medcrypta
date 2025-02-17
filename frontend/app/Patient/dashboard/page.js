@@ -48,7 +48,6 @@ export default function PatientDashboard() {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
-  // Book Appointment
 
   const [formData, setFormData] = useState({
     date: '',
