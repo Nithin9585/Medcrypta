@@ -46,6 +46,12 @@ JWT_TOKEN_LOCATION=["headers"]
 FLASK_ENV=development
 ```
 
+1. To run the test cases in the code initially run the following command:
+
+```bash
+python -m app.utils.make_validator
+```
+
 ## Project Structure
 
 ```tree
