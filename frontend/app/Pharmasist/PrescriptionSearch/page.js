@@ -1,24 +1,21 @@
 'use client';
-import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FaSearch } from 'react-icons/fa';
 
 export default function PharmacistPrescriptionPage() {
-  const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [searchId, setSearchId] = useState('');
   const [prescriptionHistory, setPrescriptionHistory] = useState([]);
   const [filteredHistory, setFilteredHistory] = useState([]);
 
-  const mockHistory = [
-    { id: 1, patientName: 'John Doe', medicineName: 'Aspirin', prescribedBy: 'Dr. Smith', date: '2025-01-01' },
-    { id: 2, patientName: 'Jane Doe', medicineName: 'Paracetamol', prescribedBy: 'Dr. Brown', date: '2025-01-05' },
-    { id: 3, patientName: 'Mark Smith', medicineName: 'Ibuprofen', prescribedBy: 'Dr. Clark', date: '2025-01-10' },
-  ];
-
   useEffect(() => {
+    const mockHistory = [
+      { id: 1, patientName: 'John Doe', medicineName: 'Aspirin', prescribedBy: 'Dr. Smith', date: '2025-01-01' },
+      { id: 2, patientName: 'Jane Doe', medicineName: 'Paracetamol', prescribedBy: 'Dr. Brown', date: '2025-01-05' },
+      { id: 3, patientName: 'Mark Smith', medicineName: 'Ibuprofen', prescribedBy: 'Dr. Clark', date: '2025-01-10' },
+    ];
     setPrescriptionHistory(mockHistory);
     setFilteredHistory(mockHistory);
   }, []);
@@ -61,7 +58,7 @@ export default function PharmacistPrescriptionPage() {
           </div>
         </div>
 
-        <h2 className="text-xl font-semibold mb-4 mt-6">Prescription History</h2>
+        <h2 className="text-xl font-semibold mb-4 mt-6">Prescription Details</h2>
         <div className="overflow-x-auto">
           <table className="table-auto min-w-full border-collapse border border-gray-300 mb-4">
             <thead>
