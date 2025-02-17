@@ -4,6 +4,7 @@ from flask_jwt_extended import create_access_token
 
 @pytest.fixture
 def client():
+    app.config['TESTING'] = True
     with app.test_client() as client:
         yield client
 
