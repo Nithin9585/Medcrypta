@@ -97,6 +97,10 @@ export default function PatientDashboard() {
             Sign Out
           </Button>
 
+          <Link href="/Patient/Prescriptions">
+          <Button className="m-2">Prescriptions</Button>
+        </Link>
+
           <div className="p-6 m-6">
             <h1 className="text-2xl font-semibold mb-6">Book an Appointment</h1>
             <form onSubmit={handleSubmit} className="space-y-4">
