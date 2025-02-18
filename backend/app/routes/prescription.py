@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify
 from bson import ObjectId
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-# from app.routes.middleware import role_required
+from app.routes.middleware import role_required
 from ..utils.mongo_wrapper import MongoDBManager
 
 prescription_bp = Blueprint("prescriptions", __name__, url_prefix="/api")
@@ -16,32 +16,32 @@ def create_prescription():
     logger = MongoDBManager._logger
 
     data = request.json
-    # patient_id = data.get("patient_id")
-    # doctor_id = data.get("doctor_id")
+    patient_id = data.get("patient_id")
+    doctor_id = data.get("doctor_id")
     medicines = data.get("medicines", [])
     diagnosis = data.get("diagnosis", "")
 
-    # if not patient_id or not doctor_id:
-    #     return jsonify({"error": "patient_id and doctor_id are required."}), 400
+    if not patient_id or not doctor_id:
+        return jsonify({"error": "patient_id and doctor_id are required."}), 400
 
-    # try:
+    try:
 
-    #     # patient_oid = ObjectId(patient_id)
-    #     # doctor_oid = ObjectId(doctor_id)
-    # except Exception:
-    #     return jsonify({"error": "Invalid patient_id or doctor_id format."}), 400
+        patient_oid = ObjectId(patient_id)
+        doctor_oid = ObjectId(doctor_id)
+    except Exception:
+        return jsonify({"error": "Invalid patient_id or doctor_id format."}), 400
 
-    # patient_exists = db["patients_details"].find_one({"_id": patient_oid})
-    # if not patient_exists:
-    #     return jsonify({"error": "Invalid patient_id. Patient not found."}), 404
+    patient_exists = db["patients_details"].find_one({"_id": patient_oid})
+    if not patient_exists:
+        return jsonify({"error": "Invalid patient_id. Patient not found."}), 404
 
-    # doctor_exists = db["doctors_details"].find_one({"_id": doctor_oid})
-    # if not doctor_exists:
-    #     return jsonify({"error": "Invalid doctor_id. Doctor not found."}), 404
+    doctor_exists = db["doctors_details"].find_one({"_id": doctor_oid})
+    if not doctor_exists:
+        return jsonify({"error": "Invalid doctor_id. Doctor not found."}), 404
 
     prescription_data = {
-        # "patient_id": patient_oid,
-        # "doctor_id": doctor_oid,
+        "patient_id": patient_oid,
+        "doctor_id": doctor_oid,
         "medicines": medicines,
         "diagnosis": diagnosis,
         "timestamp": request.json.get(
@@ -67,8 +67,8 @@ def create_prescription():
 
 
 @prescription_bp.route("/prescriptions", methods=["GET"])
-# @jwt_required()
-# @role_required("doctor")
+@jwt_required()
+@role_required("doctor")
 def get_all_prescriptions():
 
     db = MongoDBManager.get_db()
@@ -83,8 +83,8 @@ def get_all_prescriptions():
 
 
 @prescription_bp.route("/prescriptions/<string:patient_id>", methods=["GET"])
-# @jwt_required()
-# @role_required("patient")
+@jwt_required()
+@role_required("patient")
 def get_patient_prescriptions(patient_id):
 
     db = MongoDBManager.get_db()
