@@ -66,9 +66,7 @@ export default {
             "0%": { width: "0" },
             "100%": { width: "100%" },
           },
-          blink: {
-            "50%": { opacity: 0 },
-          },
+         
           marquee: {
             "0%": { transform: "translateX(100%)" }, // Start position off-screen to the right
             "100%": { transform: "translateX(-100%)" }, // End position off-screen to the left

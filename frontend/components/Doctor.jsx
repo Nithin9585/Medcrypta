@@ -129,6 +129,12 @@ export default function DoctorDashboard() {
       <div className="space-y-6 md:col-span-1 lg:col-span-2">
         <div className="space-y-4 mb-6">
           <h2 className="text-xl font-semibold">Add Prescription</h2>
+          <Link href="/Doctor/Appointments">
+        
+          <Button className="blink  m-5 bg-red-500 text-white p-4 rounded-lg text-lg">
+          Appointments
+        </Button>
+        </Link>
 
           <div className="space-y-4">
             <input
@@ -192,11 +198,7 @@ export default function DoctorDashboard() {
           <Button onClick={handleAddPrescription} className="m-4">
             Add Prescription
           </Button>
-          <Link href="/Doctor/Appointments">
-        <Button className="blink fixed top-5 right-5 bg-red-500 text-white p-4 rounded-lg text-lg">
-          Appointments
-        </Button>
-      </Link>
+         
         </div>
 
         <div className="space-y-6">
