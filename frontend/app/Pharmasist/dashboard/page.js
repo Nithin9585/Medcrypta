@@ -4,7 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-
+import { buttonData } from '@/components/config/Homecomponent.config';
 export default function PharmacistDashboard() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -32,7 +32,7 @@ export default function PharmacistDashboard() {
         
         <div className="border p-4 rounded-md shadow">
           <img
-            src="https://via.placeholder.com/300"
+            src={buttonData[0].imgsrc}
             alt="Pharmacist Profile"
             className="w-full h-56 object-cover rounded-md"
           />

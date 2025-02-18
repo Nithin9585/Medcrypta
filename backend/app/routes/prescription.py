@@ -86,9 +86,7 @@ def get_all_prescriptions():
 @jwt_required()
 @role_required("patient")
 def get_patient_prescriptions(patient_id):
-
     db = MongoDBManager.get_db()
-
     current_user = get_jwt_identity()
     patient = db["patients_details"].find_one({"username": current_user})
 

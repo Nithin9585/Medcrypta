@@ -1,5 +1,5 @@
 export const buttonData = [
-  { name: 'Doctor', link: '/Doctor/dashboard',description:'Register as a Doctor',imgsrc:'https://res.cloudinary.com/dvmmuj2r0/image/upload/v1738674896/medcrypta/onfxiocvngsvvwue0wnl.png'},
-  { name: 'Patient', link: '/Patient/dashboard',description:'Register as a patiennt',imgsrc:'https://img.freepik.com/free-photo/ill-male-patient-bed-talking-nurse_23-2148981214.jpg?t=st=1739813839~exp=1739817439~hmac=93c7df7e80b0a35effbf4a581b39f7ff5c87feaeba94eca8b8e8ee549b7a9c64&w=996'},
-  { name: 'Pharmasist', link: '/Pharmasist/dashboard',description:'Register as a pharmasist',imgsrc:'https://res.cloudinary.com/dvmmuj2r0/image/upload/v1738673634/medcrypta/mdnwsbhcfahwzgpzn2s8.png'}
+  { name: 'Doctor', link: '/Doctor/dashboard',description:'Prescribe securely with blockchain-powered verification.',imgsrc:'https://res.cloudinary.com/daqlmu4no/image/upload/v1739815677/pkiwaxzopv1qnbmtyyd7.png'},
+  { name: 'Patient', link: '/Patient/dashboard',description:'Access and manage your prescriptions hassle-free',imgsrc:'https://res.cloudinary.com/daqlmu4no/image/upload/v1739815729/h1j9fx7zhwuzqocka69h.png'},
+  { name: 'Pharmasist', link: '/Pharmasist/dashboard',description:'Verify and dispense prescriptions with trust.',imgsrc:'https://res.cloudinary.com/daqlmu4no/image/upload/v1739816049/iookcyitn1hj7sj4rjok.png'}
 ];

@@ -5,7 +5,7 @@ const users = [
   { username: 'doctor', password: 'doctor123', role: 'doctor' },
   { username: 'admin', password: 'admin123', role: 'admin' },
   { username: 'patient', password: 'patient123', role: 'patient' },
-  { username: 'pharmasist', password: 'pharmasist123', role: 'pharmasist' }
+  { username: 'pharmacist', password: 'pharmacist123', role: 'pharmasist' }
 ];
 
 // NextAuth configuration

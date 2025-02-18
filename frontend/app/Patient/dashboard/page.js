@@ -5,8 +5,8 @@ import { useSession, signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Line } from 'react-chartjs-2';
-import { patientData, appointmentHistory, patientReviews, Last7daysData } from '@/components/config/Patient.config'; // Importing data
+import { buttonData } from '@/components/config/Homecomponent.config';
+import { patientData, patientReviews } from '@/components/config/Patient.config'; // Importing data
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -31,7 +31,6 @@ ChartJS.register(
 export default function PatientDashboard() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [chartData, setChartData] = useState(null);
 
 
   useEffect(() => {
@@ -48,7 +47,6 @@ export default function PatientDashboard() {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
-  // Book Appointment
 
   const [formData, setFormData] = useState({
     date: '',
@@ -78,7 +76,7 @@ export default function PatientDashboard() {
           <h1 className="text-2xl font-semibold">{patientData.name}'s Dashboard</h1>
           <div className="border p-4 rounded-md shadow">
             <img
-              src={patientData.image}
+              src={buttonData[0].imgsrc}
               alt="Patient Profile"
               className="w-full h-50 object-cover rounded-md"
             />
@@ -97,6 +95,10 @@ export default function PatientDashboard() {
           <Button onClick={() => signOut({ callbackUrl: '/auth/signin' })}>
             Sign Out
           </Button>
+
+          <Link href="/Patient/Prescriptions">
+          <Button className="m-2">Prescriptions</Button>
+        </Link>
 
           <div className="p-6 m-6">
             <h1 className="text-2xl font-semibold mb-6">Book an Appointment</h1>

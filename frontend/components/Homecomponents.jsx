@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Button } from './ui/button';
 import { buttonData } from './config/Homecomponent.config';
 import { motion, useViewportScroll } from "framer-motion";
+import Marquee from './marque';
 import {
   Card,
   CardContent,
@@ -40,6 +41,8 @@ function Homecomponents() {
     <div className="min-h-screen font-[family-name:var(--font-geist-sans)] p-2">
       <div className='border-b-2'>
         <Welcome />
+      <Marquee/>
+
       </div>
       <div className="grid grid-cols-1 mt-5 rounded-lg p-10 dark:bg-gray-900 border-2 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {buttonData.map((button, index) => (
@@ -65,7 +68,7 @@ function Homecomponents() {
                 {button.description || 'Action card'}
               </CardDescription>
             </CardHeader>
-            <CardContent className="relative overflow-hidden"> {/* Added overflow-hidden */}
+            <CardContent className="relative overflow-hidden">
               {button.imgsrc && (
                 <motion.img
                   src={button.imgsrc}
@@ -75,9 +78,7 @@ function Homecomponents() {
                   variants={imageVariants}
                 />
               )}
-              <p className="text-sm text-muted-foreground mt-4">
-                {button.content || 'Card content'}
-              </p>
+             
             </CardContent>
             <CardFooter className="justify-end">
               <Link href={button.link} className="w-full">
