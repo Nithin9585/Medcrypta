@@ -26,7 +26,7 @@ Home</Link>
 <Link href="/Contact" className="relative inline-block hover:text-gray-600 dark:hover:text-white">
   Contact
 </Link>
-<Link href="/about" className="relative inline-block hover:text-gray-600  dark:hover:text-white">
+<Link href="/aboutProject" className="relative inline-block hover:text-gray-600  dark:hover:text-white">
   About Project
 </Link>
 
@@ -56,7 +56,7 @@ Home</Link>
                   <div className="flex pt-10 flex-col gap-8 items-center">
                     <Link href="/" className=" hover:text-gray-200">Home</Link>
                     <Link href="/Contact" className=" hover:text-gray-200">Contact</Link>
-                    <Link href="/about" className=" hover:text-gray-200">About Project</Link>
+                    <Link href="/aboutProject" className=" hover:text-gray-200">About Project</Link>
                     <div className="flex justify-center absolute bottom-0 left-0 w-full p-4">
                     </div>
                   </div>

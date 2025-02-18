@@ -26,16 +26,23 @@ export default function DoctorDashboard() {
       router.push('/unauthorized');
     }
 
+    // Fetch medicine history
     fetch('/api/medicine-history')
       .then((res) => res.json())
       .then((data) => setMedicineHistory(data));
   }, [session, status, router]);
 
-  const handleAddPrescription = () => {
+  const handleAddPrescription = async () => {
     let valid = true;
+    const newErrors = { patientName: '', medicines: [] };
 
-    
+    // Validate patient name
+    if (!patientName) {
+      newErrors.patientName = 'Patient name is required';
+      valid = false;
+    }
 
+    // Validate medicines
     const updatedMedicines = medicines.map((medicine, index) => {
       const medicineErrors = [];
       if (!medicine.medicineName) medicineErrors.push('Medicine name is required');
@@ -60,14 +67,32 @@ export default function DoctorDashboard() {
       const newPrescription = {
         patientName,
         medicines,
-        date: new Date().toLocaleDateString(),
+        diagnosis: 'Diagnosis details', // Optional: You can include this from the form if necessary
+        timestamp: new Date().toISOString(), // Automatically set timestamp
       };
 
-      setMedicineHistory((prev) => [newPrescription, ...prev]);
+      try {
+        const response = await fetch('/api/prescriptions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newPrescription),
+        });
 
-      setPatientName('');
-      setMedicines([{ medicineName: '', tabletQuantity: '', dosage: '', price: '' }]);
-    } else {
+        const result = await response.json();
+
+        if (response.ok) {
+          alert('Prescription added successfully');
+          setPatientName('');
+          setMedicines([{ medicineName: '', tabletQuantity: '', dosage: '', price: '' }]);
+        } else {
+          alert(`Error: ${result.message || 'Failed to add prescription'}`);
+        }
+      } catch (error) {
+        console.error('Error submitting prescription:', error);
+        alert('Error: Failed to add prescription');
+      }
     }
   };
 
@@ -90,7 +115,7 @@ export default function DoctorDashboard() {
     <div className="p-6 m-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 rounded-lg">
       <div className="space-y-6 md:col-span-1">
         <h1 className="text-2xl font-semibold">Welcome, {session?.user?.name || 'Doctor'}</h1>
-        
+
         <div className="border p-4 rounded-md shadow">
           <img
             src="https://via.placeholder.com/300"
@@ -106,7 +131,7 @@ export default function DoctorDashboard() {
       <div className="space-y-6 md:col-span-1 lg:col-span-2">
         <div className="space-y-4 mb-6">
           <h2 className="text-xl font-semibold">Add Prescription</h2>
-          
+
           <div className="space-y-4">
             <input
               type="text"
@@ -115,9 +140,7 @@ export default function DoctorDashboard() {
               placeholder="Patient Name"
               className={`w-full p-3 border border-gray-300 rounded-md ${errors.patientName ? 'border-red-500' : ''}`}
             />
-            {errors.patientName && (
-              <span className="text-red-500 text-sm">{errors.patientName}</span>
-            )}
+            {errors.patientName && <span className="text-red-500 text-sm">{errors.patientName}</span>}
           </div>
 
           {medicines.map((medicine, index) => (
@@ -143,7 +166,14 @@ export default function DoctorDashboard() {
                 placeholder="Dosage/Instructions"
                 className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Dosage is required') ? 'border-red-500' : ''}`}
               />
-             
+              <input
+                type="number"
+                value={medicine.price}
+                onChange={(e) => handleMedicineChange(index, 'price', e.target.value)}
+                placeholder="Price"
+                className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Price must be a positive number') ? 'border-red-500' : ''}`}
+              />
+
               {errors.medicines[index] && errors.medicines[index].length > 0 && (
                 <div className="text-red-500 text-sm">
                   {errors.medicines[index].map((error, i) => (
@@ -161,7 +191,9 @@ export default function DoctorDashboard() {
 
           <Button onClick={addMedicine}>Add Another Medicine</Button>
 
-          <Button onClick={handleAddPrescription} className="m-4">Add Prescription</Button>
+          <Button onClick={handleAddPrescription} className="m-4">
+            Add Prescription
+          </Button>
         </div>
 
         <div className="space-y-6">
@@ -171,7 +203,7 @@ export default function DoctorDashboard() {
           <Button onClick={() => signOut({ callbackUrl: '/auth/signin' })} className="mt-4">
             Sign Out
           </Button>
-        </div>       
+        </div>
       </div>
     </div>
   );

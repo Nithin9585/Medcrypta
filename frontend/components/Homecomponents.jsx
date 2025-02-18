@@ -65,7 +65,7 @@ function Homecomponents() {
                 {button.description || 'Action card'}
               </CardDescription>
             </CardHeader>
-            <CardContent className="relative overflow-hidden"> {/* Added overflow-hidden */}
+            <CardContent className="relative overflow-hidden">
               {button.imgsrc && (
                 <motion.img
                   src={button.imgsrc}
@@ -75,9 +75,7 @@ function Homecomponents() {
                   variants={imageVariants}
                 />
               )}
-              <p className="text-sm text-muted-foreground mt-4">
-                {button.content || 'Card content'}
-              </p>
+             
             </CardContent>
             <CardFooter className="justify-end">
               <Link href={button.link} className="w-full">
