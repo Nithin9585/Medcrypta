@@ -1,21 +1,22 @@
 'use client';
-import { useRouter } from 'next/navigation';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { buttonData } from '@/components/config/Homecomponent.config';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Toast, useToast } from '@shadcn/toast';
+import * as Toast from '@radix-ui/react-toast'; 
 
 export default function DoctorDashboard() {
   const { data: session } = useSession();
-  const { toast } = useToast();
 
   const [patientName, setPatientName] = useState('');
   const [medicines, setMedicines] = useState([
     { medicineName: '', tabletQuantity: '', dosage: '' },
   ]);
   const [errors, setErrors] = useState({ patientName: '', medicines: [] });
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('success'); // success or error
 
   const validateMedicine = (medicine, index) => {
     const errorsList = [];
@@ -67,15 +68,20 @@ export default function DoctorDashboard() {
 
         const result = await response.json();
         if (response.ok) {
-          toast({ title: 'Success', description: 'Prescription added successfully!', type: 'success' });
-          setPatientName('');
-          setMedicines([{ medicineName: '', tabletQuantity: '', dosage: '' }]);
+          setToastMessage('Prescription added successfully!');
+          setToastType('success');
         } else {
-          toast({ title: 'Error', description: 'Failed to add prescription', type: 'error' });
+          setToastMessage('Failed to add prescription');
+          setToastType('error');
         }
       } catch (error) {
         console.error('Error submitting prescription:', error);
-        toast({ title: 'Error', description: 'Failed to add prescription', type: 'error' });
+        setToastMessage('Failed to add prescription');
+        setToastType('error');
+      } finally {
+        setToastOpen(true);
+        setPatientName('');
+        setMedicines([{ medicineName: '', tabletQuantity: '', dosage: '' }]);
       }
     }
   };
@@ -96,84 +102,92 @@ export default function DoctorDashboard() {
   };
 
   return (
-    <div className="p-6 m-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 rounded-lg">
-      <div className="space-y-6 md:col-span-1">
-        <h1 className="text-2xl font-semibold">Welcome, {session?.user?.name || 'Doctor'}</h1>
+    <Toast.Provider>
+      <div className="p-6 m-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 rounded-lg">
+        <div className="space-y-6 md:col-span-1">
+          <h1 className="text-2xl font-semibold">Welcome, {session?.user?.name || 'Doctor'}</h1>
 
-        <div className="border p-4 rounded-md shadow">
-          <img
-            src={buttonData[0].imgsrc}
-            alt="Doctor Profile"
-            className="w-full h-56 object-cover rounded-md"
-          />
-          <h2 className="text-lg font-bold mt-2">{session?.user?.name || 'Dr. John Doe'}</h2>
-          <p className="text-sm">Specialty: General Medicine</p>
-          <p className="text-sm">Clinic: City Health Clinic</p>
-        </div>
-      </div>
-
-      <div className="space-y-6 md:col-span-1 lg:col-span-2">
-        <h2 className="text-xl font-semibold">Add Prescription</h2>
-
-        <Link href="/Doctor/Appointments">
-          <Button className="mt-2 bg-red-500 text-white p-4 rounded-sm text-lg">
-            Prescription History
-          </Button>
-        </Link>
-
-        <div className="space-y-4">
-          <input
-            type="text"
-            value={patientName}
-            onChange={(e) => setPatientName(e.target.value)}
-            placeholder="Patient Name"
-            className={`w-full p-3 border border-gray-300 rounded-md ${errors.patientName ? 'border-red-500' : ''}`}
-          />
-          {errors.patientName && <span className="text-red-500 text-sm">{errors.patientName}</span>}
-        </div>
-
-        {medicines.map((medicine, index) => (
-          <div key={index} className="space-y-4">
-            <input
-              type="text"
-              value={medicine.medicineName}
-              onChange={(e) => handleMedicineChange(index, 'medicineName', e.target.value)}
-              placeholder="Medicine Name"
-              className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Medicine name is required') ? 'border-red-500' : ''}`}
+          <div className="border p-4 rounded-md shadow">
+            <img
+              src={buttonData[0].imgsrc}
+              alt="Doctor Profile"
+              className="w-full h-56 object-cover rounded-md"
             />
-            <input
-              type="number"
-              value={medicine.tabletQuantity}
-              onChange={(e) => handleMedicineChange(index, 'tabletQuantity', e.target.value)}
-              placeholder="Tablet Quantity"
-              className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Tablet quantity must be a positive number') ? 'border-red-500' : ''}`}
-            />
-            <input
-              type="text"
-              value={medicine.dosage}
-              onChange={(e) => handleMedicineChange(index, 'dosage', e.target.value)}
-              placeholder="Dosage/Instructions"
-              className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Dosage is required') ? 'border-red-500' : ''}`}
-            />
-
-            {medicines.length > 1 && (
-              <Button onClick={() => removeMedicine(index)} className="mt-2 bg-red-600">
-                Remove Medicine
-              </Button>
-            )}
+            <h2 className="text-lg font-bold mt-2">{session?.user?.name || 'Dr. John Doe'}</h2>
+            <p className="text-sm">Specialty: General Medicine</p>
+            <p className="text-sm">Clinic: City Health Clinic</p>
           </div>
-        ))}
+        </div>
 
-        <Button onClick={addMedicine}>Add Another Medicine</Button>
+        <div className="space-y-6 md:col-span-1 lg:col-span-2">
+          <h2 className="text-xl font-semibold">Add Prescription</h2>
 
-        <Button onClick={handleAddPrescription} className="m-4">
-          Add Prescription
-        </Button>
+          <Link href="/Doctor/Appointments">
+            <Button className="mt-2 bg-red-500 text-white p-4 rounded-sm text-lg">
+              Prescription History
+            </Button>
+          </Link>
 
-        <div className="space-y-6">
-          <Toast />
+          <div className="space-y-4">
+            <input
+              type="text"
+              value={patientName}
+              onChange={(e) => setPatientName(e.target.value)}
+              placeholder="Patient Name"
+              className={`w-full p-3 border border-gray-300 rounded-md ${errors.patientName ? 'border-red-500' : ''}`}
+            />
+            {errors.patientName && <span className="text-red-500 text-sm">{errors.patientName}</span>}
+          </div>
+
+          {medicines.map((medicine, index) => (
+            <div key={index} className="space-y-4">
+              <input
+                type="text"
+                value={medicine.medicineName}
+                onChange={(e) => handleMedicineChange(index, 'medicineName', e.target.value)}
+                placeholder="Medicine Name"
+                className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Medicine name is required') ? 'border-red-500' : ''}`}
+              />
+              <input
+                type="number"
+                value={medicine.tabletQuantity}
+                onChange={(e) => handleMedicineChange(index, 'tabletQuantity', e.target.value)}
+                placeholder="Tablet Quantity"
+                className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Tablet quantity must be a positive number') ? 'border-red-500' : ''}`}
+              />
+              <input
+                type="text"
+                value={medicine.dosage}
+                onChange={(e) => handleMedicineChange(index, 'dosage', e.target.value)}
+                placeholder="Dosage/Instructions"
+                className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Dosage is required') ? 'border-red-500' : ''}`}
+              />
+
+              {medicines.length > 1 && (
+                <Button onClick={() => removeMedicine(index)} className="mt-2 bg-red-600">
+                  Remove Medicine
+                </Button>
+              )}
+            </div>
+          ))}
+
+          <Button onClick={addMedicine}>Add Another Medicine</Button>
+
+          <Button onClick={handleAddPrescription} className="m-4">
+            Add Prescription
+          </Button>
         </div>
       </div>
-    </div>
+
+      <Toast.Root open={toastOpen} onOpenChange={setToastOpen}>
+        <Toast.Title>{toastType === 'success' ? 'Success' : 'Error'}</Toast.Title>
+        <Toast.Description>{toastMessage}</Toast.Description>
+        <Toast.Action asChild altText="Close">
+          <Button onClick={() => setToastOpen(false)}>Close</Button>
+        </Toast.Action>
+      </Toast.Root>
+
+      <Toast.Viewport className="fixed bottom-10 right-8" />
+    </Toast.Provider>
   );
 }

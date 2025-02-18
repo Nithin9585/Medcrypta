@@ -3,17 +3,18 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FaSearch } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
-import { toast } from '@shadcn/toast';  // Import Toast from ShadCN
+import * as Toast from '@radix-ui/react-toast';  // Import Radix Toast components
 
 export default function PharmacistPrescriptionPage() {
   const [searchId, setSearchId] = useState('');
   const [prescription, setPrescription] = useState(null);
   const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);  // Manage the toast open state
   const router = useRouter();
 
   const handleSearchClick = async () => {
     if (!searchId) {
-      toast.error('Please enter a prescription ID.');  // Show error toast
+      setOpen(true); // Show toast for missing prescription ID
       return;
     }
 
@@ -25,17 +26,17 @@ export default function PharmacistPrescriptionPage() {
       const data = await response.json();
       setPrescription(data);
       setError(null);
-      toast.success('Prescription found successfully!');  // Success toast
+      setOpen(true);  // Show success toast
     } catch (err) {
       setPrescription(null);
       setError(err.message);
-      toast.error(err.message);  // Show error toast with message
+      setOpen(true);  // Show error toast
     }
   };
 
   const handleApproveClick = async () => {
     if (!searchId) {
-      toast.error('Please enter a prescription ID.');  // Show error toast
+      setOpen(true); // Show toast for missing prescription ID
       return;
     }
 
@@ -51,12 +52,12 @@ export default function PharmacistPrescriptionPage() {
       const updatedPrescription = await response.json();
       setPrescription(updatedPrescription);
       setError(null);
-      toast.success('Prescription approved successfully!');  // Success toast
+      setOpen(true);  // Show success toast
 
       router.push('/Pharmasist/approved-prescriptions');
     } catch (err) {
       setError(err.message);
-      toast.error(err.message);  // Show error toast with message
+      setOpen(true);  // Show error toast
     }
   };
 
@@ -102,6 +103,14 @@ export default function PharmacistPrescriptionPage() {
           </div>
         )}
       </div>
+
+      {/* Toast Notifications */}
+      <Toast.Provider>
+        <Toast.Root open={open} onOpenChange={setOpen} duration={3000}>
+          <Toast.Title>{error ? 'Error' : 'Success'}</Toast.Title>
+          <Toast.Description>{error || 'Action was successful!'}</Toast.Description>
+        </Toast.Root>
+      </Toast.Provider>
     </div>
   );
 }
