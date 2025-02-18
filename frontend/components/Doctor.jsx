@@ -4,7 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-
+import { buttonData } from './config/Homecomponent.config';
 export default function DoctorDashboard() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -26,7 +26,6 @@ export default function DoctorDashboard() {
       router.push('/unauthorized');
     }
 
-    // Fetch medicine history
     fetch('/api/medicine-history')
       .then((res) => res.json())
       .then((data) => setMedicineHistory(data));
@@ -36,13 +35,11 @@ export default function DoctorDashboard() {
     let valid = true;
     const newErrors = { patientName: '', medicines: [] };
 
-    // Validate patient name
     if (!patientName) {
       newErrors.patientName = 'Patient name is required';
       valid = false;
     }
 
-    // Validate medicines
     const updatedMedicines = medicines.map((medicine, index) => {
       const medicineErrors = [];
       if (!medicine.medicineName) medicineErrors.push('Medicine name is required');
@@ -67,8 +64,8 @@ export default function DoctorDashboard() {
       const newPrescription = {
         patientName,
         medicines,
-        diagnosis: 'Diagnosis details', // Optional: You can include this from the form if necessary
-        timestamp: new Date().toISOString(), // Automatically set timestamp
+        diagnosis: 'Diagnosis details', 
+        timestamp: new Date().toISOString(), 
       };
 
       try {
@@ -118,7 +115,7 @@ export default function DoctorDashboard() {
 
         <div className="border p-4 rounded-md shadow">
           <img
-            src="https://via.placeholder.com/300"
+            src={buttonData[0].imgsrc}
             alt="Doctor Profile"
             className="w-full h-56 object-cover rounded-md"
           />
