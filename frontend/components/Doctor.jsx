@@ -1,35 +1,29 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { buttonData } from '@/components/config/Homecomponent.config';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { buttonData } from './config/Homecomponent.config';
+
 export default function DoctorDashboard() {
   const router = useRouter();
-  const { data: session, status } = useSession();
-  const [medicineHistory, setMedicineHistory] = useState([]);
+  const { data: session } = useSession();
 
-  // Form state for adding a prescription
   const [patientName, setPatientName] = useState('');
   const [medicines, setMedicines] = useState([
-    { medicineName: '', tabletQuantity: '', dosage: '', price: '' },
+    { medicineName: '', tabletQuantity: '', dosage: '' },
   ]);
   const [errors, setErrors] = useState({ patientName: '', medicines: [] });
 
-  useEffect(() => {
-    if (status === 'loading') return;
-    if (!session) {
-      sessionStorage.setItem('redirectPath', window.location.pathname);
-      router.push('/auth/signin');
-    } else if (session?.user.role !== 'doctor') {
-      router.push('/unauthorized');
-    }
-
-    fetch('/api/medicine-history')
-      .then((res) => res.json())
-      .then((data) => setMedicineHistory(data));
-  }, [session, status, router]);
+  const validateMedicine = (medicine, index) => {
+    const errorsList = [];
+    if (!medicine.medicineName) errorsList.push('Medicine name is required');
+    if (!medicine.tabletQuantity || medicine.tabletQuantity <= 0)
+      errorsList.push('Tablet quantity must be a positive number');
+    if (!medicine.dosage) errorsList.push('Dosage is required');
+    return errorsList;
+  };
 
   const handleAddPrescription = async () => {
     let valid = true;
@@ -41,20 +35,13 @@ export default function DoctorDashboard() {
     }
 
     const updatedMedicines = medicines.map((medicine, index) => {
-      const medicineErrors = [];
-      if (!medicine.medicineName) medicineErrors.push('Medicine name is required');
-      if (!medicine.tabletQuantity || medicine.tabletQuantity <= 0)
-        medicineErrors.push('Tablet quantity must be a positive number');
-      if (!medicine.dosage) medicineErrors.push('Dosage is required');
-      if (!medicine.price || medicine.price <= 0) medicineErrors.push('Price must be a positive number');
-
+      const medicineErrors = validateMedicine(medicine, index);
       if (medicineErrors.length > 0) {
         newErrors.medicines[index] = medicineErrors;
         valid = false;
       } else {
         newErrors.medicines[index] = [];
       }
-
       return { ...medicine, errors: medicineErrors };
     });
 
@@ -64,8 +51,8 @@ export default function DoctorDashboard() {
       const newPrescription = {
         patientName,
         medicines,
-        diagnosis: 'Diagnosis details', 
-        timestamp: new Date().toISOString(), 
+        diagnosis: 'Diagnosis details',
+        timestamp: new Date().toISOString(),
       };
 
       try {
@@ -78,18 +65,16 @@ export default function DoctorDashboard() {
         });
 
         const result = await response.json();
-
         if (response.ok) {
           alert('Prescription added successfully');
           setPatientName('');
-          setMedicines([{ medicineName: '', tabletQuantity: '', dosage: '', price: '' }]);
+          setMedicines([{ medicineName: '', tabletQuantity: '', dosage: '' }]);
         } else {
-          alert('prescription added successfully');
-
+          alert('Failed to add prescription');
         }
       } catch (error) {
         console.error('Error submitting prescription:', error);
-        alert(': Failed to add prescription');
+        alert('Failed to add prescription');
       }
     }
   };
@@ -101,7 +86,7 @@ export default function DoctorDashboard() {
   };
 
   const addMedicine = () => {
-    setMedicines([...medicines, { medicineName: '', tabletQuantity: '', dosage: '', price: '' }]);
+    setMedicines([...medicines, { medicineName: '', tabletQuantity: '', dosage: '' }]);
   };
 
   const removeMedicine = (index) => {
@@ -127,79 +112,62 @@ export default function DoctorDashboard() {
       </div>
 
       <div className="space-y-6 md:col-span-1 lg:col-span-2">
-        <div className="space-y-4 mb-6">
-          <h2 className="text-xl font-semibold">Add Prescription</h2>
-          <Link href="/Doctor/Appointments">
-        
-          <Button className="blink  m-5 bg-red-500 text-white p-4 rounded-lg text-lg">
-          Appointments
-        </Button>
+        <h2 className="text-xl font-semibold">Add Prescription</h2>
+
+        <Link href="/Doctor/Appointments">
+          <Button className="m-5 bg-red-500 text-white p-4 rounded-lg text-lg">
+            Appointments
+          </Button>
         </Link>
 
-          <div className="space-y-4">
+        <div className="space-y-4">
+          <input
+            type="text"
+            value={patientName}
+            onChange={(e) => setPatientName(e.target.value)}
+            placeholder="Patient Name"
+            className={`w-full p-3 border border-gray-300 rounded-md ${errors.patientName ? 'border-red-500' : ''}`}
+          />
+          {errors.patientName && <span className="text-red-500 text-sm">{errors.patientName}</span>}
+        </div>
+
+        {medicines.map((medicine, index) => (
+          <div key={index} className="space-y-4">
             <input
               type="text"
-              value={patientName}
-              onChange={(e) => setPatientName(e.target.value)}
-              placeholder="Patient Name"
-              className={`w-full p-3 border border-gray-300 rounded-md ${errors.patientName ? 'border-red-500' : ''}`}
+              value={medicine.medicineName}
+              onChange={(e) => handleMedicineChange(index, 'medicineName', e.target.value)}
+              placeholder="Medicine Name"
+              className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Medicine name is required') ? 'border-red-500' : ''}`}
             />
-            {errors.patientName && <span className="text-red-500 text-sm">{errors.patientName}</span>}
+            <input
+              type="number"
+              value={medicine.tabletQuantity}
+              onChange={(e) => handleMedicineChange(index, 'tabletQuantity', e.target.value)}
+              placeholder="Tablet Quantity"
+              className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Tablet quantity must be a positive number') ? 'border-red-500' : ''}`}
+            />
+            <input
+              type="text"
+              value={medicine.dosage}
+              onChange={(e) => handleMedicineChange(index, 'dosage', e.target.value)}
+              placeholder="Dosage/Instructions"
+              className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Dosage is required') ? 'border-red-500' : ''}`}
+            />
+
+            {medicines.length > 1 && (
+              <Button onClick={() => removeMedicine(index)} className="mt-2 bg-red-600">
+                Remove Medicine
+              </Button>
+            )}
           </div>
+        ))}
 
-          {medicines.map((medicine, index) => (
-            <div key={index} className="space-y-4">
-              <input
-                type="text"
-                value={medicine.medicineName}
-                onChange={(e) => handleMedicineChange(index, 'medicineName', e.target.value)}
-                placeholder="Medicine Name"
-                className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Medicine name is required') ? 'border-red-500' : ''}`}
-              />
-              <input
-                type="number"
-                value={medicine.tabletQuantity}
-                onChange={(e) => handleMedicineChange(index, 'tabletQuantity', e.target.value)}
-                placeholder="Tablet Quantity"
-                className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Tablet quantity must be a positive number') ? 'border-red-500' : ''}`}
-              />
-              <input
-                type="text"
-                value={medicine.dosage}
-                onChange={(e) => handleMedicineChange(index, 'dosage', e.target.value)}
-                placeholder="Dosage/Instructions"
-                className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Dosage is required') ? 'border-red-500' : ''}`}
-              />
-              <input
-                type="number"
-                value={medicine.price}
-                onChange={(e) => handleMedicineChange(index, 'price', e.target.value)}
-                placeholder="Price"
-                className={`w-full p-3 border border-gray-300 rounded-md ${errors.medicines[index]?.includes('Price must be a positive number') ? 'border-red-500' : ''}`}
-              />
+        <Button onClick={addMedicine}>Add Another Medicine</Button>
 
-              {errors.medicines[index] && errors.medicines[index].length > 0 && (
-                <div className="text-red-500 text-sm">
-                  {errors.medicines[index].map((error, i) => (
-                    <div key={i}>{error}</div>
-                  ))}
-                </div>
-              )}
-              {medicines.length > 1 && (
-                <Button onClick={() => removeMedicine(index)} className="mt-2 bg-red-600">
-                  Remove Medicine
-                </Button>
-              )}
-            </div>
-          ))}
-
-          <Button onClick={addMedicine}>Add Another Medicine</Button>
-          
-          <Button onClick={handleAddPrescription} className="m-4">
-            Add Prescription
-          </Button>
-         
-        </div>
+        <Button onClick={handleAddPrescription} className="m-4">
+          Add Prescription
+        </Button>
 
         <div className="space-y-6">
           <Link href="/Doctor/PrescriptionSearch" className="mr-4">

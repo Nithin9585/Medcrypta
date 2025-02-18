@@ -4,7 +4,7 @@ export const patientData = {
     age: 29,
     email: 'ella.smith@gmail.com',
     phone: '(123) 456-7890',
-    image: '/images/patients/patient-2.jpg',
+    image: 'https://res.cloudinary.com/daqlmu4no/image/upload/v1739815729/h1j9fx7zhwuzqocka69h.png',
     address: '123 Oak Street, Springfield, IL',
     emergencyContact: '(321) 654-0987',
     medicalHistory: [

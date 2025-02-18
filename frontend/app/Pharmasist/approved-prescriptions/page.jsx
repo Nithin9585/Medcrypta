@@ -1,43 +1,43 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 
-const PrescriptionList = () => {
+const ApprovedPrescriptions = () => {
   const [prescriptions, setPrescriptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPrescriptions = async () => {
+    const fetchApprovedPrescriptions = async () => {
       try {
-        const response = await fetch('/api/fetchprescription'); // Ensure correct API endpoint
+        const response = await fetch('/api/approvedprescription');
         if (!response.ok) {
-          throw new Error('Failed to fetch prescriptions');
+          throw new Error('Failed to fetch approved prescriptions');
         }
         const data = await response.json();
-        setPrescriptions(data);
-      } catch (error) {
-        setError(error.message || 'An unknown error occurred');
+        setPrescriptions(data); 
+      } catch (err) {
+        setError(err.message || 'An unknown error occurred');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPrescriptions();
+    fetchApprovedPrescriptions();
   }, []);
 
   if (loading) {
-    return <div className="text-center py-4">Loading prescriptions...</div>;
+    return <div>Loading approved prescriptions...</div>;
   }
 
   if (error) {
-    return <div className="text-center text-red-500 py-4">Error: {error}</div>;
+    return <div className="text-red-500 text-center">{error}</div>;
   }
 
   return (
-    <div className="container mx-auto p-4 min-h-screen flex-row">
-      <h1 className="text-2xl font-bold mb-4 text-center">All Prescriptions</h1>
+    <div className="container mx-auto p-4 min-h-screen">
+      <h1 className="text-2xl font-bold mb-4 text-center">Approved Prescriptions</h1>
       {prescriptions.length === 0 ? (
-        <p className="text-center text-gray-500">No prescriptions available.</p>
+        <p className="text-center text-gray-500">No approved prescriptions available.</p>
       ) : (
         <div className="max-h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100">
           {prescriptions.map((prescription) => (
@@ -70,4 +70,4 @@ const PrescriptionList = () => {
   );
 };
 
-export default PrescriptionList;
+export default ApprovedPrescriptions;
