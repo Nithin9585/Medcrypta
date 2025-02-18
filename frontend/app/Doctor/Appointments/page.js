@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { toast } from '@shadcn/toast';  // Import Toast from ShadCN
 
 const PrescriptionList = () => {
   const [prescriptions, setPrescriptions] = useState([]);
@@ -15,8 +16,10 @@ const PrescriptionList = () => {
         }
         const data = await response.json();
         setPrescriptions(data);
+        toast.success('Prescriptions loaded successfully!'); // Success toast
       } catch (error) {
         setError(error.message || 'An unknown error occurred');
+        toast.error(error.message || 'An unknown error occurred'); // Error toast
       } finally {
         setLoading(false);
       }

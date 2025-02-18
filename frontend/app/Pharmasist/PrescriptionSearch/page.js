@@ -2,17 +2,18 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FaSearch } from 'react-icons/fa';
-import { useRouter } from 'next/navigation';  
+import { useRouter } from 'next/navigation';
+import { toast } from '@shadcn/toast';  // Import Toast from ShadCN
 
 export default function PharmacistPrescriptionPage() {
-  const [searchId, setSearchId] = useState(''); 
-  const [prescription, setPrescription] = useState(null); 
+  const [searchId, setSearchId] = useState('');
+  const [prescription, setPrescription] = useState(null);
   const [error, setError] = useState(null);
-  const router = useRouter();  
+  const router = useRouter();
 
   const handleSearchClick = async () => {
     if (!searchId) {
-      setError("Please enter a prescription ID.");
+      toast.error('Please enter a prescription ID.');  // Show error toast
       return;
     }
 
@@ -22,17 +23,19 @@ export default function PharmacistPrescriptionPage() {
         throw new Error('Prescription not found');
       }
       const data = await response.json();
-      setPrescription(data);  
-      setError(null);  
+      setPrescription(data);
+      setError(null);
+      toast.success('Prescription found successfully!');  // Success toast
     } catch (err) {
-      setPrescription(null);  
-      setError(err.message);  
+      setPrescription(null);
+      setError(err.message);
+      toast.error(err.message);  // Show error toast with message
     }
   };
 
   const handleApproveClick = async () => {
     if (!searchId) {
-      setError("Please enter a prescription ID.");
+      toast.error('Please enter a prescription ID.');  // Show error toast
       return;
     }
 
@@ -46,12 +49,14 @@ export default function PharmacistPrescriptionPage() {
       }
 
       const updatedPrescription = await response.json();
-      setPrescription(updatedPrescription);  
-      setError(null);  
+      setPrescription(updatedPrescription);
+      setError(null);
+      toast.success('Prescription approved successfully!');  // Success toast
 
-      router.push('/Pharmasist/approved-prescriptions');  
+      router.push('/Pharmasist/approved-prescriptions');
     } catch (err) {
-      setError(err.message);  
+      setError(err.message);
+      toast.error(err.message);  // Show error toast with message
     }
   };
 

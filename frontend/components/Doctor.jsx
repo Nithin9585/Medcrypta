@@ -5,10 +5,11 @@ import { useState } from 'react';
 import { buttonData } from '@/components/config/Homecomponent.config';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { Toast, useToast } from '@shadcn/toast';
 
 export default function DoctorDashboard() {
-  const router = useRouter();
   const { data: session } = useSession();
+  const { toast } = useToast();
 
   const [patientName, setPatientName] = useState('');
   const [medicines, setMedicines] = useState([
@@ -66,15 +67,15 @@ export default function DoctorDashboard() {
 
         const result = await response.json();
         if (response.ok) {
-          alert('Prescription added successfully');
+          toast({ title: 'Success', description: 'Prescription added successfully!', type: 'success' });
           setPatientName('');
           setMedicines([{ medicineName: '', tabletQuantity: '', dosage: '' }]);
         } else {
-          alert('Failed to add prescription');
+          toast({ title: 'Error', description: 'Failed to add prescription', type: 'error' });
         }
       } catch (error) {
         console.error('Error submitting prescription:', error);
-        alert('Failed to add prescription');
+        toast({ title: 'Error', description: 'Failed to add prescription', type: 'error' });
       }
     }
   };
@@ -115,8 +116,8 @@ export default function DoctorDashboard() {
         <h2 className="text-xl font-semibold">Add Prescription</h2>
 
         <Link href="/Doctor/Appointments">
-          <Button className="m-5 bg-red-500 text-white p-4 rounded-lg text-lg">
-            Appointments
+          <Button className="mt-2 bg-red-500 text-white p-4 rounded-sm text-lg">
+            Prescription History
           </Button>
         </Link>
 
@@ -170,12 +171,7 @@ export default function DoctorDashboard() {
         </Button>
 
         <div className="space-y-6">
-          <Link href="/Doctor/PrescriptionSearch" className="mr-4">
-            <Button>Search Prescription</Button>
-          </Link>
-          <Button onClick={() => signOut({ callbackUrl: '/auth/signin' })} className="mt-4">
-            Sign Out
-          </Button>
+          <Toast />
         </div>
       </div>
     </div>

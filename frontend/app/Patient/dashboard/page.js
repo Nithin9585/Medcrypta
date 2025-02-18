@@ -1,9 +1,6 @@
-// PatientDashboard.js
 
 'use client';
 
-import { signOut } from 'next-auth/react';
-import { Button } from '@/components/ui/button';
 import { patientData } from '@/components/config/Patient.config'; 
 import PrescriptionList from '@/app/Doctor/Appointments/page';
 export default function PatientDashboard() {
@@ -31,9 +28,7 @@ export default function PatientDashboard() {
         </div>
 
         <div className="md:col-span-3 lg:col-span-3 space-y-6">
-          <Button onClick={() => signOut({ callbackUrl: '/auth/signin' })}>
-            Sign Out
-          </Button>
+         
 
           <PrescriptionList/>
 

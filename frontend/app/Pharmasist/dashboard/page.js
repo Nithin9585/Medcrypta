@@ -32,9 +32,7 @@ export default function PharmacistDashboard() {
           <Link href="/Pharmasist/PrescriptionSearch" className="m-4">
             <Button>Search Prescription</Button>
           </Link>
-          <Button onClick={() => signOut({ callbackUrl: '/auth/signin' })} className="mt-4">
-            Sign Out
-          </Button>
+         
         </div>
 
         <h2 className="text-xl font-semibold mb-4">Medicine History</h2>

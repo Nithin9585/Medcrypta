@@ -21,7 +21,6 @@ function BlockchainPage() {
   useEffect(() => {
     const fetchTransactions = async () => {  // Function to fetch transactions (replace with your API call)
       try {
-        // Replace this with your actual API call:
         const response = await new Promise(resolve => { // Simulate API call with Promise
             setTimeout(() => {
                 resolve([
