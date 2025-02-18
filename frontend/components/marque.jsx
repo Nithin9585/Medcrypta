@@ -16,7 +16,6 @@ function Marquee() {
   }, []);
 
   const handleClick = () => {
-    // Store the current transaction details in localStorage
     localStorage.setItem('transactionDetails', transactionDetails);
   };
 

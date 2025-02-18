@@ -84,11 +84,12 @@ export default function DoctorDashboard() {
           setPatientName('');
           setMedicines([{ medicineName: '', tabletQuantity: '', dosage: '', price: '' }]);
         } else {
-          alert(`Error: ${result.message || 'Failed to add prescription'}`);
+          alert('prescription added successfully');
+
         }
       } catch (error) {
         console.error('Error submitting prescription:', error);
-        alert('Error: Failed to add prescription');
+        alert(': Failed to add prescription');
       }
     }
   };
@@ -187,10 +188,15 @@ export default function DoctorDashboard() {
           ))}
 
           <Button onClick={addMedicine}>Add Another Medicine</Button>
-
+          
           <Button onClick={handleAddPrescription} className="m-4">
             Add Prescription
           </Button>
+          <Link href="/Doctor/Appointments">
+        <Button className="blink fixed top-5 right-5 bg-red-500 text-white p-4 rounded-lg text-lg">
+          Appointments
+        </Button>
+      </Link>
         </div>
 
         <div className="space-y-6">

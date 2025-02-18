@@ -58,7 +58,8 @@ export default {
         animation: {
           typewriter: "typewriter 4s steps(30) 1, backspace 4s steps(30) 1 4s, pause 1s infinite",
           blink: "blink 1s step-start infinite",
-          marquee: "marquee 10s linear infinite", // Added marquee animation
+          marquee: "marquee 10s linear infinite", 
+          
         },
         keyframes: {
           typewriter: {
