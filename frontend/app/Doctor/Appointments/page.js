@@ -48,9 +48,9 @@ const PrescriptionList = () => {
         {prescriptions.length === 0 ? (
           <p className="text-center text-gray-500">No prescriptions available.</p>
         ) : (
-          <div className="max-h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100">
+          <div className="max-h-[500px] p-5 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100">
             {prescriptions.map((prescription) => (
-              <div key={prescription._id} className="rounded-lg shadow-md p-6 mb-4 w-full">
+              <div key={prescription._id} className="rounded-lg border-2 border-green-600 shadow-md p-6 mb-4 w-full">
                 <h3 className="text-lg font-semibold mb-2">Prescription ID: {prescription._id}</h3>
                 <p className="text-sm text-gray-500 mb-2">
                   <strong>Issued on:</strong> {new Date(prescription.timestamp).toLocaleString()}

@@ -22,7 +22,7 @@ function Welcome() {
 
       {showParagraph && (
         <p className="mt-4 text-sm sm:text-base md:text-lg text-center">
-          A secured, transparent, and efficient way to manage prescriptions
+         Bridging Doctors, Patients, and Pharmacies with Trust.
         </p>
       )}
     </div>

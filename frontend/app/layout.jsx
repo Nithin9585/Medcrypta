@@ -22,21 +22,21 @@ const geistMono = Geist_Mono({
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-black text-gray-900 dark:text-gray-300`}>
-        <SessionProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="relative w-full h-full overflow-hidden">
-              <Navbar />
-              <ToastProvider>
-                <main>{children}</main>
-              </ToastProvider>
-              <Footer />
-            </div>
-          </ThemeProvider>
-        </SessionProvider>
-      </body>
-    </html>
+      <html lang="en">
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-black text-gray-900 dark:text-gray-300`} style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+          <SessionProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <div className="relative w-full flex flex-col flex-grow">
+                <Navbar />
+                <ToastProvider>
+                  <main className="flex-grow">{children}</main>
+                </ToastProvider>
+                <Footer className="mt-auto" />
+              </div>
+            </ThemeProvider>
+          </SessionProvider>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }

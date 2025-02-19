@@ -41,7 +41,6 @@ export default function Navbar() {
             About Project
           </Link>
 
-          {/* Clerk Auth Buttons (Signed In / Out) */}
           <SignedIn>
             <UserButton />
           </SignedIn>
@@ -49,11 +48,9 @@ export default function Navbar() {
             <SignInButton />
           </SignedOut>
 
-          {/* Mode Toggle */}
           <ModeToggle />
         </div>
 
-        {/* Mobile Navbar Menu (Hamburger) */}
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger>
